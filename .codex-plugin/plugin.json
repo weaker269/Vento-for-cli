@@ -1,0 +1,33 @@
+{
+  "name": "vento",
+  "version": "0.1.0",
+  "description": "Portable AI project collaboration framework for Codex.",
+  "author": {
+    "name": "wenct"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "agents",
+    "skills",
+    "roadmap",
+    "project-knowledge",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Vento",
+    "shortDescription": "Maintain AI-ready project knowledge.",
+    "longDescription": "Vento helps Codex bootstrap and maintain portable project collaboration assets: AGENTS.md, project skills, current-state docs, roadmap lifecycle rules, validation checks, and refresh workflows.",
+    "developerName": "wenct",
+    "category": "Productivity",
+    "capabilities": [
+      "Project analysis",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use Vento to bootstrap this project.",
+      "Use Vento to manage project skills.",
+      "Use Vento to replace the roadmap."
+    ]
+  }
+}

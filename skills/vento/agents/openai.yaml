@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vento"
+  short_description: "Apply the Vento AI project collaboration framework."
+  default_prompt: "Use Vento to bootstrap this project."
