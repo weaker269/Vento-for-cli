@@ -4,9 +4,21 @@ Use these boundaries when creating or reviewing Vento project assets.
 
 ## AGENTS.md
 
-Use for hard rules, authorization boundaries, key entry points, high-risk areas, project commands, and completion gates.
+Use for hard rules, authorization boundaries, current-fact entry points, high-risk architecture guardrails, core commands, and completion gates.
 
-Do not use it as a complete architecture manual.
+AGENTS.md is policy-first, not inventory-first. It should tell an agent how to work safely in the project and where to read current facts.
+
+Keep only pointer-level facts:
+
+- one-sentence project identity
+- current-state doc path
+- top-level source roots or truth-source paths
+- core install/build/typecheck/test/start commands
+- dangerous operations requiring confirmation
+- project-wide architecture guardrails
+- Vento maintenance gate
+
+Do not use AGENTS.md as a complete architecture manual, module map, route inventory, docs index, or task-specific test matrix.
 
 ## .agents/skills
 
@@ -16,7 +28,7 @@ Do not create project skills for generic advice.
 
 ## Current-State Docs
 
-Use for concise current code facts: what the project is, where truth lives, and which historical paths are obsolete.
+Use for concise current code facts: what the project is, where truth lives, technical stack, module map, key paths, commands, and which historical paths are obsolete.
 
 Do not include future plans or unimplemented roadmap items.
 
@@ -31,4 +43,3 @@ Do not turn construct docs into task logs.
 Use for demand and prioritization: what to do, status, acceptance, and links to specs, plans, commits, or validation evidence.
 
 Do not treat deprecated roadmaps as active planning sources.
-

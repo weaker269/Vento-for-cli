@@ -19,6 +19,7 @@ Validate may inspect:
 - unclear project skill triggers
 - referenced paths that do not exist
 - commands mentioned in Vento docs but absent from project config
+- `AGENTS.md` that reads like current-state: full module maps, route inventories, docs inventories, detailed command matrices, or business data definitions
 - placeholder text left in generated files
 - current-state docs containing future plans
 - roadmap content treated as current code fact
@@ -27,4 +28,3 @@ Validate may inspect:
 - obvious facts copied from a different project
 
 Do not modify files in validate mode unless the user explicitly changes the request.
-

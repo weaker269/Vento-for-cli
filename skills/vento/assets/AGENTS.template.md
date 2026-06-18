@@ -1,11 +1,14 @@
 # Project Agent Rules
 
-## Project Snapshot
+This file is the project-level behavior entry for AI agents. It is policy-first, not an implementation inventory. Current code facts live in the current-state document and source code.
 
-- What this project is:
-- Main stack:
-- Primary entry points:
-- Durable truth sources:
+## Project Identity
+
+- Project:
+- Current facts entry:
+- Primary source roots:
+
+Keep this section short. Do not describe subsystem details here.
 
 ## Working Rules
 
@@ -14,32 +17,37 @@
 - High-risk operations requiring confirmation:
 - Secrets and environment rules:
 
-## Key Paths
+## Context Entry Points
 
-- Source:
+- Current state:
+- Project skills:
+- Source roots:
 - Tests:
-- Docs:
-- Config:
-- Data/schema:
-- Build/deploy:
+- Config/schema:
 
-## Commands
+List only top-level roots or truth-source paths. Put detailed module maps, route lists, and docs inventories in current-state docs or project skills.
+
+## Core Commands
 
 ```bash
 # install
 
 # build
 
-# test
+# typecheck
 
-# targeted test
+# test
 ```
+
+Keep only commands most agents need. Put task-specific validation matrices in project skills.
 
 ## Architecture Guardrails
 
-- Current invariant:
+- Project-wide invariant:
+- High-risk boundary:
 - Obsolete path not to restore:
-- Reuse entry point:
+
+Keep this section to project-wide guardrails. Put subsystem-specific guidance in current-state docs or project skills.
 
 ## Vento Maintenance Gate
 
@@ -52,4 +60,3 @@ After code changes, check whether the change affects:
 - roadmap
 
 Explain what was updated or why no Vento asset update was needed.
-
