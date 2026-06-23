@@ -71,17 +71,17 @@ Start a new Codex thread after installing or updating the plugin.
 
 ## Validate
 
-When the local Codex system validators are available:
+When the local Codex skill validator is available:
 
 ```bash
-python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py ~/plugins/vento
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ~/plugins/vento/skills/vento
 ```
 
 Vento also includes lightweight local checks:
 
 ```bash
-python3 scripts/inventory_project.py
-python3 scripts/validate_vento_project.py .
+python3 skills/vento/scripts/inventory_project.py
+python3 skills/vento/scripts/validate_vento_project.py .
 ```
 
+The root-level `scripts/` entries are compatibility wrappers for the bundled skill scripts.

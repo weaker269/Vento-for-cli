@@ -39,7 +39,7 @@ Treat these slash-like phrases as aliases, even when no real slash command exist
 
 ## Bundled Resources
 
+- Paths in this section are relative to this skill directory.
 - Use templates in `assets/` when creating project files.
 - Use `scripts/inventory_project.py` for a lightweight project inventory when helpful.
 - Use `scripts/validate_vento_project.py` for deterministic Vento structure checks when possible.
-
