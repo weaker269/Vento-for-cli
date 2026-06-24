@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 FRONTMATTER_RE = re.compile(r"^---\n(?P<body>.*?)\n---\n", re.DOTALL)
+CURRENT_STATE_NAME_RE = re.compile(r"(?:^|[-_])(?:codebase-)?current-state(?:[-_]|$)", re.IGNORECASE)
 
 
 def check_agents(path: Path) -> tuple[list[str], list[str]]:
@@ -61,6 +62,22 @@ def check_skill(path: Path) -> list[str]:
     return issues
 
 
+def check_construct_boundaries(root: Path) -> list[str]:
+    warnings: list[str] = []
+    construct_root = root / "docs" / "construct"
+    if not construct_root.exists():
+        return warnings
+
+    for doc in sorted(construct_root.rglob("*.md")):
+        if CURRENT_STATE_NAME_RE.search(doc.stem):
+            warnings.append(
+                f"{doc}: current-state entrypoint appears to be under docs/construct; "
+                "prefer docs/productization/codebase-current-state.md or docs/codebase-current-state.md"
+            )
+
+    return warnings
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("root", nargs="?", default=".")
@@ -80,6 +97,8 @@ def main() -> int:
     if skills_root.exists():
         for skill_md in sorted(skills_root.glob("*/SKILL.md")):
             issues.extend(check_skill(skill_md))
+
+    warnings.extend(check_construct_boundaries(root))
 
     roadmap = root / "docs" / "roadmap" / "active-roadmap.md"
     productization_roadmap = root / "docs" / "productization" / "active-roadmap.md"

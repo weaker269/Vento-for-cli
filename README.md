@@ -10,6 +10,18 @@ It provides one main skill, `vento`, with these modes:
 - `vento validate`: run read-only structural checks for Vento assets.
 - `vento refresh`: audit cross-asset factual drift and plan updates.
 
+## Default Asset Layout
+
+Vento separates AI-facing current facts from human-facing construction docs:
+
+- `AGENTS.md`: project rules, authorization boundaries, entry points, and maintenance gates.
+- `.agents/skills/<skill-name>/SKILL.md`: task-specific project playbooks.
+- `docs/productization/codebase-current-state.md`: concise AI/agent current-state entrypoint.
+- `docs/construct/<topic>.md`: topic-based system construction docs for flows, state, data, and invariants.
+- `docs/productization/active-roadmap.md`: active demand and prioritization source.
+
+For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
+
 ## Install As A Local Personal Plugin
 
 Clone this repository to the standard local plugin path:

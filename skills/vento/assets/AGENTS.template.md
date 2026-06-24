@@ -5,7 +5,7 @@ This file is the project-level behavior entry for AI agents. It is policy-first,
 ## Project Identity
 
 - Project:
-- Current facts entry:
+- Current facts entry: `docs/productization/codebase-current-state.md`
 - Primary source roots:
 
 Keep this section short. Do not describe subsystem details here.
@@ -19,13 +19,14 @@ Keep this section short. Do not describe subsystem details here.
 
 ## Context Entry Points
 
-- Current state:
+- Current state: `docs/productization/codebase-current-state.md`
 - Project skills:
+- Construct docs: `docs/construct/`
 - Source roots:
 - Tests:
 - Config/schema:
 
-List only top-level roots or truth-source paths. Put detailed module maps, route lists, and docs inventories in current-state docs or project skills.
+List only top-level roots or truth-source paths. Put detailed module maps, route lists, and docs inventories in current-state docs or project skills. Keep construct docs for topic-specific human-facing system construction, not the codebase current-state entrypoint.
 
 ## Core Commands
 

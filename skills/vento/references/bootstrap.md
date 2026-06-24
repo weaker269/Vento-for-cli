@@ -14,6 +14,18 @@ Bootstrap may propose or create:
 
 Bootstrap must not create full `.agents/skills` or manage roadmap replacement. Use Skills or Roadmap mode for those.
 
+## Default Paths
+
+Prefer these paths unless the target project already has a clear, compatible convention:
+
+- current-state doc: `docs/productization/codebase-current-state.md`
+- lightweight fallback current-state doc: `docs/codebase-current-state.md`
+- construct docs: `docs/construct/<topic>.md`
+- active roadmap: `docs/productization/active-roadmap.md`
+- lightweight fallback active roadmap: `docs/roadmap/active-roadmap.md`
+
+Do not place the codebase current-state entrypoint under `docs/construct/`. Construct docs are topic-based human-facing system construction documents, not the AI/agent current-state entrypoint.
+
 ## Workflow
 
 1. Read existing guidance first: `AGENTS.md`, README, docs, package/build/test config, CI config, main entry files, schema or route files if present.
@@ -33,6 +45,7 @@ Bootstrap must not create full `.agents/skills` or manage roadmap replacement. U
 - Treat `AGENTS.md` as policy-first, not inventory-first.
 - Keep `AGENTS.md` executable and concise: behavior rules, confirmation boundaries, current-fact entry points, high-risk architecture guardrails, and Vento maintenance gates.
 - If creating both `AGENTS.md` and current-state docs, write current implementation facts into current-state first and make `AGENTS.md` point to it.
+- If creating construct docs, create only topic-specific skeletons that explain implemented flows, state transitions, data locations, or invariants.
 - Do not put full module maps, API route lists, docs inventories, business data definitions, or detailed command matrices in `AGENTS.md`.
 - Do not move detailed subsystem guidance into `AGENTS.md`; use current-state docs or propose project skills instead.
 - Keep `AGENTS.md` commands to core install/build/typecheck/test/start commands plus dangerous-command confirmation rules.
