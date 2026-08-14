@@ -1,6 +1,6 @@
 # Vento
 
-Vento is a portable Codex plugin for bootstrapping and maintaining AI-ready project knowledge.
+Vento is a portable plugin for Codex and Claude Code, bootstrapping and maintaining AI-ready project knowledge.
 
 It provides one main skill, `vento`, with these modes:
 
@@ -22,7 +22,7 @@ Vento separates AI-facing current facts from human-facing construction docs:
 
 For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
 
-## Install As A Local Personal Plugin
+## Install In Codex
 
 Clone this repository to the standard local plugin path:
 
@@ -80,6 +80,19 @@ codex plugin add vento@personal
 ```
 
 Start a new Codex thread after installing or updating the plugin.
+
+## Install In Claude Code
+
+The repository doubles as a Claude Code plugin marketplace via `.claude-plugin/`, coexisting with the Codex layout in `.codex-plugin/`.
+
+Register the marketplace and install:
+
+```bash
+claude plugin marketplace add ~/plugins/vento
+claude plugin install vento@vento
+```
+
+The same commands are available inside a session as `/plugin marketplace add` and `/plugin install`. Start a new Claude Code session after installing or updating the plugin.
 
 ## Validate
 

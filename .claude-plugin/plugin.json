@@ -1,0 +1,15 @@
+{
+  "name": "vento",
+  "version": "0.1.1",
+  "description": "Portable AI project collaboration framework for coding agents.",
+  "author": {
+    "name": "wenct"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "agents",
+    "skills",
+    "roadmap",
+    "project-knowledge"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "vento",
+  "owner": {
+    "name": "wenct"
+  },
+  "plugins": [
+    {
+      "name": "vento",
+      "source": "./",
+      "description": "Portable AI project collaboration framework: bootstrap and maintain AGENTS.md, project skills, current-state docs, and roadmap lifecycle.",
+      "version": "0.1.1",
+      "category": "productivity",
+      "keywords": [
+        "agents",
+        "skills",
+        "roadmap",
+        "project-knowledge"
+      ]
+    }
+  ]
+}
