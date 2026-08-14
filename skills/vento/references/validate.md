@@ -7,6 +7,7 @@ Use this mode for read-only structural checks of Vento project assets.
 Validate may inspect:
 
 - `AGENTS.md`
+- `CLAUDE.md` and `.claude/skills` cross-agent bridge files
 - `.agents/skills/*/SKILL.md`
 - current-state docs
 - construct docs
@@ -26,5 +27,8 @@ Validate may inspect:
 - active roadmap over 2000 lines
 - deprecated roadmap referenced as the active source
 - obvious facts copied from a different project
+- `AGENTS.md` present but `CLAUDE.md` missing or lacking the `@AGENTS.md` import (Claude Code will not auto-load project rules)
+- `.agents/skills` present but the `.claude/skills` bridge symlink missing (Claude Code will not discover project skills)
+- `.claude/skills` existing as a real directory that may diverge from `.agents/skills`
 
 Do not modify files in validate mode unless the user explicitly changes the request.

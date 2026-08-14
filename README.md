@@ -22,6 +22,15 @@ Vento separates AI-facing current facts from human-facing construction docs:
 
 For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
 
+## Cross-Agent Bridge
+
+`AGENTS.md` and `.agents/skills/` are the source of truth. Codex loads them natively; Claude Code loads `CLAUDE.md` and `.claude/skills/` instead, so Vento bootstrap proposes two pointer-only bridge files:
+
+- `CLAUDE.md` containing a single `@AGENTS.md` import line.
+- `.claude/skills` as a relative symlink to `.agents/skills`.
+
+No content is duplicated; both agents read the same assets. `vento validate` reports missing bridge files as warnings.
+
 ## Install In Codex
 
 Clone this repository to the standard local plugin path:

@@ -23,6 +23,8 @@ Create a project skill only when at least one is true:
 
 Do not create a skill for generic engineering advice.
 
+When creating the first project skill, ensure `.claude/skills` bridges to `.agents/skills` per the Cross-Agent Bridge rules in `bootstrap.md`.
+
 ## Required Project Skill Content
 
 Each project skill should include:

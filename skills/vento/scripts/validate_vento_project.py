@@ -78,6 +78,37 @@ def check_construct_boundaries(root: Path) -> list[str]:
     return warnings
 
 
+def check_cross_agent_bridge(root: Path) -> list[str]:
+    """Warn when Claude Code cannot auto-load AGENTS.md or discover .agents/skills."""
+    warnings: list[str] = []
+    claude_md = root / "CLAUDE.md"
+    claude_skills = root / ".claude" / "skills"
+
+    if (root / "AGENTS.md").exists():
+        if not claude_md.exists():
+            warnings.append(
+                f"{claude_md}: missing; create an `@AGENTS.md` import stub so Claude Code auto-loads AGENTS.md"
+            )
+        elif "@AGENTS.md" not in claude_md.read_text():
+            warnings.append(
+                f"{claude_md}: lacks the `@AGENTS.md` import; Claude Code will not auto-load AGENTS.md"
+            )
+
+    if (root / ".agents" / "skills").exists():
+        if claude_skills.is_symlink():
+            pass
+        elif claude_skills.is_dir():
+            warnings.append(
+                f"{claude_skills}: real directory, not a bridge symlink; may diverge from .agents/skills"
+            )
+        else:
+            warnings.append(
+                f"{claude_skills}: missing; symlink to ../.agents/skills so Claude Code discovers project skills"
+            )
+
+    return warnings
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("root", nargs="?", default=".")
@@ -99,6 +130,7 @@ def main() -> int:
             issues.extend(check_skill(skill_md))
 
     warnings.extend(check_construct_boundaries(root))
+    warnings.extend(check_cross_agent_bridge(root))
 
     roadmap = root / "docs" / "roadmap" / "active-roadmap.md"
     productization_roadmap = root / "docs" / "productization" / "active-roadmap.md"

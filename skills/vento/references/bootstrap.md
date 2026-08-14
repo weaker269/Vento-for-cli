@@ -7,6 +7,7 @@ Use this mode when a project is first adopting Vento or needs a baseline AI coll
 Bootstrap may propose or create:
 
 - `AGENTS.md`
+- cross-agent bridge files (`CLAUDE.md` import stub, `.claude/skills` symlink)
 - a concise current-state document
 - optional construct doc skeletons
 - optional roadmap recommendation
@@ -26,6 +27,17 @@ Prefer these paths unless the target project already has a clear, compatible con
 
 Do not place the codebase current-state entrypoint under `docs/construct/`. Construct docs are topic-based human-facing system construction documents, not the AI/agent current-state entrypoint.
 
+## Cross-Agent Bridge
+
+Vento assets are agent-neutral, but auto-loading differs by agent: Codex loads `AGENTS.md` and `.agents/skills` natively; Claude Code loads `CLAUDE.md` and `.claude/skills` instead. Bridge with pointers, never with copies:
+
+- If `CLAUDE.md` is missing, create it with a single line: `@AGENTS.md`.
+- If `CLAUDE.md` exists without that import, propose appending an `@AGENTS.md` line. Never overwrite existing `CLAUDE.md` content.
+- If `.agents/skills` exists and `.claude/skills` is missing, create a relative symlink: `mkdir -p .claude && ln -s ../.agents/skills .claude/skills`.
+- If `.claude/skills` already exists as a real directory, do not replace it. Report the conflict and let the user decide.
+- Keep `AGENTS.md` and `.agents/skills` as the single source of truth. Do not write agent-specific rule copies.
+- Missing bridge files are warnings, not errors. Projects that only use one agent may skip them.
+
 ## Workflow
 
 1. Read existing guidance first: `AGENTS.md`, README, docs, package/build/test config, CI config, main entry files, schema or route files if present.
@@ -36,7 +48,7 @@ Do not place the codebase current-state entrypoint under `docs/construct/`. Cons
    - task-specific workflows, reuse points, and validation matrices -> project skills
    - future demand and priority -> roadmap
 4. Identify stable boundaries, high-risk areas, core commands, reusable entry points, and missing facts.
-5. Propose the Vento asset plan before writing.
+5. Propose the Vento asset plan before writing, including any missing cross-agent bridge files.
 6. After explicit write approval, create or update only the agreed baseline files.
 7. Report what was created, what was skipped, and what facts remain unconfirmed.
 

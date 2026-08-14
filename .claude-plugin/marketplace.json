@@ -8,7 +8,7 @@
       "name": "vento",
       "source": "./",
       "description": "Portable AI project collaboration framework: bootstrap and maintain AGENTS.md, project skills, current-state docs, and roadmap lifecycle.",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "category": "productivity",
       "keywords": [
         "agents",

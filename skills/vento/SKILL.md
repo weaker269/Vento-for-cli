@@ -5,7 +5,7 @@ description: Apply the Vento portable AI project collaboration framework. Use wh
 
 # Vento
 
-Vento is a portable AI project collaboration framework. It helps Codex build and maintain project-specific guidance so future agents can understand, modify, debug, test, and extend a codebase without stale assumptions or duplicated work.
+Vento is a portable AI project collaboration framework. It helps coding agents such as Codex and Claude Code build and maintain project-specific guidance so future agents can understand, modify, debug, test, and extend a codebase without stale assumptions or duplicated work.
 
 Vento migrates the framework method, not facts from another project. Always rediscover facts from the current repository before writing project guidance.
 
@@ -33,6 +33,7 @@ Treat these slash-like phrases as aliases, even when no real slash command exist
 - Use current code, config, tests, docs, and user-confirmed facts as evidence. Do not invent project capabilities.
 - Keep current facts separate from future plans.
 - Keep Vento assets scoped: `AGENTS.md` for hard rules and entry points, `.agents/skills` for task scenarios, current-state docs for concise current facts, construct docs for system flows, roadmap for future demand.
+- Keep assets loadable from both Codex and Claude Code via the cross-agent bridge rules in `references/bootstrap.md`; `AGENTS.md` and `.agents/skills` remain the single source of truth.
 - Do not create generic project skills. A project skill must encode project-specific files, reuse points, risks, or validation choices.
 - Preserve existing useful content and user edits. Update incrementally.
 - If Vento output affects long-lived project guidance, explain what was updated and what was intentionally left unchanged.
