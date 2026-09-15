@@ -1,0 +1,58 @@
+{
+  "schema": "vento/architecture/v1",
+  "status": "active",
+  "diagram": "docs/construct/architecture/system.drawio",
+  "model": "docs/construct/architecture/system.ir.json",
+  "curated_model": "docs/construct/architecture/architecture-model.json",
+  "modeling": {
+    "source_of_truth": "curated",
+    "allow_inference": false
+  },
+  "sources": [
+    {"path": "src", "kind": "javascript"}
+  ],
+  "views": ["context", "container", "dynamic", "deployment"],
+  "view_contracts": [
+    {
+      "id": "context",
+      "question": "What is this system and who or what does it interact with?",
+      "audience": "new contributors and stakeholders",
+      "max_nodes": 8,
+      "max_edges": 12
+    },
+    {
+      "id": "container",
+      "question": "What are the major runtime building blocks?",
+      "audience": "engineers",
+      "max_nodes": 12,
+      "max_edges": 20
+    },
+    {
+      "id": "dynamic",
+      "question": "How does one important use case flow through the system?",
+      "audience": "engineers",
+      "max_nodes": 12,
+      "max_edges": 20
+    },
+    {
+      "id": "deployment",
+      "question": "Where do the runtime components and data stores run?",
+      "audience": "operators and engineers",
+      "max_nodes": 14,
+      "max_edges": 24
+    }
+  ],
+  "engine": {
+    "name": "drawio-skill",
+    "version": "3.4.0"
+  },
+  "sync": {
+    "preserve_manual_layout": true,
+    "prune": false
+  },
+  "integration": {
+    "current_state": "docs/productization/codebase-current-state.md",
+    "construct_index": "docs/construct/README.md",
+    "agents": "AGENTS.md"
+  }
+}

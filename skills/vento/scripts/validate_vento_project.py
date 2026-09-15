@@ -5,7 +5,11 @@ from __future__ import annotations
 
 import argparse
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from architecture import diagram_metrics, documentation_integration, find_manifest, validate_manifest
 
 
 FRONTMATTER_RE = re.compile(r"^---\n(?P<body>.*?)\n---\n", re.DOTALL)
@@ -109,6 +113,36 @@ def check_cross_agent_bridge(root: Path) -> list[str]:
     return warnings
 
 
+def check_architecture(root: Path) -> tuple[list[str], list[str]]:
+    """Validate opt-in architecture manifests without requiring draw.io."""
+    issues: list[str] = []
+    warnings: list[str] = []
+    manifest, data, parse_errors = find_manifest(root)
+    issues.extend(parse_errors)
+    if manifest is None or data is None:
+        return issues, warnings
+    issues.extend(validate_manifest(root, manifest, data))
+    if not (manifest.parent / "README.md").exists():
+        warnings.append(
+            f"{manifest}: architecture README.md is missing; add a human-facing scope and provenance entry"
+        )
+    integration = documentation_integration(root, manifest, data)
+    if not integration["configured"]:
+        warnings.append(
+            f"{manifest}: architecture is not linked from a current-state/map document"
+        )
+    for value in integration["missing"]:
+        warnings.append(f"{manifest}: missing integration target {value}")
+    for value in integration["unlinked"]:
+        warnings.append(f"{manifest}: integration target does not link architecture assets: {value}")
+    metrics = diagram_metrics(root, data)
+    if isinstance(metrics, dict) and "error" not in metrics:
+        for view, result in metrics.items():
+            for finding in result["readability_issues"]:
+                warnings.append(f"{manifest}: view {view} exceeds readability contract ({finding})")
+    return issues, warnings
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("root", nargs="?", default=".")
@@ -131,6 +165,9 @@ def main() -> int:
 
     warnings.extend(check_construct_boundaries(root))
     warnings.extend(check_cross_agent_bridge(root))
+    architecture_issues, architecture_warnings = check_architecture(root)
+    issues.extend(architecture_issues)
+    warnings.extend(architecture_warnings)
 
     roadmap = root / "docs" / "roadmap" / "active-roadmap.md"
     productization_roadmap = root / "docs" / "productization" / "active-roadmap.md"

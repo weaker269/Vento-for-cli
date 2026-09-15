@@ -22,6 +22,7 @@ Keep this section short. Do not describe subsystem details here.
 - Current state: `docs/productization/codebase-current-state.md`
 - Project skills:
 - Construct docs: `docs/construct/`
+- Architecture assets (when initialized): `docs/construct/architecture/`
 - Source roots:
 - Tests:
 - Config/schema:
@@ -58,6 +59,10 @@ After code changes, check whether the change affects:
 - `.agents/skills`
 - current-state docs
 - construct docs
+- architecture manifest and `.drawio`/Diagram IR assets
 - roadmap
 
 Explain what was updated or why no Vento asset update was needed.
+If architecture maintenance is initialized, also verify that the current-state/map
+entry still links the architecture manifest and that affected views remain within
+their readability contracts.

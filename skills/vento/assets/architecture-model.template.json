@@ -1,0 +1,46 @@
+{
+  "schema": "vento/architecture-model/v1",
+  "metadata": {
+    "title": "",
+    "scope": "",
+    "audience": [],
+    "source_reviewed": [],
+    "last_reviewed": ""
+  },
+  "components": [
+    {
+      "id": "component-id",
+      "name": "Component name",
+      "kind": "container",
+      "boundary": "system",
+      "responsibility": "One sentence describing the responsibility",
+      "technology": "",
+      "evidence": ["path/to/source"],
+      "confidence": "confirmed",
+      "status": "current"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "component-a-to-component-b",
+      "from": "component-a",
+      "to": "component-b",
+      "purpose": "One sentence describing why the relationship exists",
+      "protocol": "",
+      "evidence": ["path/to/source"],
+      "confidence": "confirmed",
+      "visible_in": ["container"]
+    }
+  ],
+  "views": [
+    {
+      "id": "context",
+      "question": "What is the system boundary and who interacts with it?",
+      "audience": ["new contributors", "stakeholders"],
+      "components": ["component-id"],
+      "relationships": [],
+      "max_nodes": 8,
+      "max_edges": 12
+    }
+  ]
+}

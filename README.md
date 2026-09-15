@@ -7,6 +7,7 @@ It provides one main skill, `vento`, with these modes:
 - `vento bootstrap`: set up baseline project AI guidance.
 - `vento skills`: create, update, audit, validate, or deprecate project `.agents/skills`.
 - `vento roadmap`: initialize, update, replace, rotate, or inspect project roadmaps.
+- `vento architecture`: initialize, inspect, review, and maintain project architecture diagrams.
 - `vento validate`: run read-only structural checks for Vento assets.
 - `vento refresh`: audit cross-asset factual drift and plan updates.
 
@@ -18,6 +19,9 @@ Vento separates AI-facing current facts from human-facing construction docs:
 - `.agents/skills/<skill-name>/SKILL.md`: task-specific project playbooks.
 - `docs/productization/codebase-current-state.md`: concise AI/agent current-state entrypoint.
 - `docs/construct/<topic>.md`: topic-based system construction docs for flows, state, data, and invariants.
+- `docs/construct/architecture/`: optional architecture diagram assets and their Vento maintenance manifest.
+  The recommended set is `architecture.json` + `architecture-model.json` + generated
+  `system.ir.json`/`system.drawio` views.
 - `docs/productization/active-roadmap.md`: active demand and prioritization source.
 
 For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
@@ -117,5 +121,20 @@ Vento also includes lightweight local checks:
 python3 skills/vento/scripts/inventory_project.py
 python3 skills/vento/scripts/validate_vento_project.py .
 ```
+
+Architecture diagrams are opt-in project assets. Use Architecture mode only after an
+explicit initialization request. Once a project has a manifest at
+`docs/construct/architecture/architecture.json` (or a documented compatible path),
+`vento refresh` checks architecture-impacting changes and proposes an incremental
+drawio-skill sync. It does not create a diagram for projects that have not opted in.
+The manifest also records its links into the current-state document, construct index,
+and `AGENTS.md` when those assets exist; an unlinked diagram is reported as
+documentation drift rather than being treated as a complete project map.
+
+Prefer a small set of purpose-specific views over one source dump. A context view
+should answer the system-boundary question, a container view should answer the
+major-runtime-block question, and dynamic/deployment/data views should be created
+only when they answer a separate question. Use `view_contracts` in the manifest to
+set the intended audience, question, and node/edge limits for each view.
 
 The root-level `scripts/` entries are compatibility wrappers for the bundled skill scripts.
