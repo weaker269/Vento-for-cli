@@ -3,18 +3,21 @@
   "owner": {
     "name": "wenct"
   },
+  "description": "Portable AI project collaboration framework for Codex and Claude Code.",
   "plugins": [
     {
       "name": "vento",
       "source": "./",
-      "description": "Portable AI project collaboration framework: bootstrap and maintain AGENTS.md, project skills, current-state docs, and roadmap lifecycle.",
-      "version": "0.2.0",
+      "description": "Portable AI project collaboration framework for Codex and Claude Code: shared AGENTS.md, project skills, current-state, architecture maps, and roadmap lifecycle.",
+      "version": "0.2.1",
       "category": "productivity",
       "keywords": [
         "agents",
         "skills",
         "roadmap",
-        "project-knowledge"
+        "project-knowledge",
+        "architecture",
+        "drawio"
       ]
     }
   ]

@@ -35,6 +35,11 @@ For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-
 
 No content is duplicated; both agents read the same assets. `vento validate` reports missing bridge files as warnings.
 
+Claude Code loads the installed plugin's `skills/` directory as namespaced skills
+such as `/vento:vento`. A plugin-root `CLAUDE.md` is not used as project context;
+for target projects, the supported bridge remains a project-root `CLAUDE.md` with
+`@AGENTS.md` plus a `.claude/skills` symlink to `.agents/skills`.
+
 ## Install In Codex
 
 Clone this repository to the standard local plugin path:
@@ -101,11 +106,49 @@ The repository doubles as a Claude Code plugin marketplace via `.claude-plugin/`
 Register the marketplace and install:
 
 ```bash
-claude plugin marketplace add ~/plugins/vento
-claude plugin install vento@vento
+claude plugin marketplace add /home/wenct/myself/vento
+claude plugin install vento@vento --scope user --yes
 ```
 
-The same commands are available inside a session as `/plugin marketplace add` and `/plugin install`. Start a new Claude Code session after installing or updating the plugin.
+For a Git checkout, replace the local path with the repository path or GitHub
+source accepted by `claude plugin marketplace add`. The same commands are
+available inside a session as `/plugin marketplace add` and `/plugin install`.
+
+Verify the installed plugin and its skill inventory:
+
+```bash
+claude plugin list --json
+claude plugin details vento@vento
+```
+
+When the marketplace source changes, update the existing installation instead of
+creating a second copy:
+
+```bash
+claude plugin marketplace update vento
+claude plugin update vento@vento --scope user --yes
+claude plugin enable vento@vento --scope user
+```
+
+If an older cache or a disabled selector is blocking the new version, use the
+scoped reinstall flow:
+
+```bash
+claude plugin uninstall vento@vento --scope user
+claude plugin install vento@vento --scope user --yes
+claude plugin enable vento@vento --scope user
+```
+
+Start a new Claude Code session after install or update. The plugin skill is
+invoked with the namespace `/vento:vento`; project-specific rules continue to be
+loaded from `CLAUDE.md`/`AGENTS.md`, not copied into the plugin.
+
+Validate the Claude package from the Vento source tree:
+
+```bash
+python3 scripts/validate_claude_plugin.py .
+claude plugin validate .
+```
 
 ## Validate
 

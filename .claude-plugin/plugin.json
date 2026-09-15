@@ -1,7 +1,7 @@
 {
   "name": "vento",
-  "version": "0.2.0",
-  "description": "Portable AI project collaboration framework for coding agents.",
+  "version": "0.2.1",
+  "description": "Portable AI project collaboration framework for Codex and Claude Code, with shared AGENTS.md, project skills, current-state, architecture maps, and roadmap maintenance.",
   "author": {
     "name": "wenct"
   },
@@ -10,6 +10,8 @@
     "agents",
     "skills",
     "roadmap",
-    "project-knowledge"
+    "project-knowledge",
+    "architecture",
+    "drawio"
   ]
 }

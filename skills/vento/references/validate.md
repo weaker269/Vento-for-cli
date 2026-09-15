@@ -8,6 +8,7 @@ Validate may inspect:
 
 - `AGENTS.md`
 - `CLAUDE.md` and `.claude/skills` cross-agent bridge files
+- the Vento `.claude-plugin` manifest, marketplace entry, and Claude Code skill package
 - `.agents/skills/*/SKILL.md`
 - opt-in architecture manifests and their repository-relative diagram/IR artifacts
 - current-state docs
