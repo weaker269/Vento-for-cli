@@ -5,7 +5,7 @@ Vento is a portable plugin for Codex and Claude Code, bootstrapping and maintain
 It provides one main skill, `vento`, with these modes:
 
 - `vento bootstrap`: set up baseline project AI guidance.
-- `vento skills`: create, update, audit, validate, or deprecate project `.agents/skills`.
+- `vento skills`: create, update, audit, validate, or deprecate project skills in the authoritative host's native directory.
 - `vento roadmap`: initialize, update, replace, rotate, or inspect project roadmaps.
 - `vento architecture`: initialize, inspect, review, and maintain project architecture diagrams.
 - `vento validate`: run read-only structural checks for Vento assets.
@@ -15,8 +15,8 @@ It provides one main skill, `vento`, with these modes:
 
 Vento separates AI-facing current facts from human-facing construction docs:
 
-- `AGENTS.md`: project rules, authorization boundaries, entry points, and maintenance gates.
-- `.agents/skills/<skill-name>/SKILL.md`: task-specific project playbooks.
+- `AGENTS.md` or `CLAUDE.md`: the first host's native project rules, authorization boundaries, entry points, and maintenance gates.
+- `.agents/skills/<skill-name>/SKILL.md` or `.claude/skills/<skill-name>/SKILL.md`: task-specific project playbooks owned by the first host.
 - `docs/productization/codebase-current-state.md`: concise AI/agent current-state entrypoint.
 - `docs/construct/<topic>.md`: topic-based system construction docs for flows, state, data, and invariants.
 - `docs/construct/architecture/`: optional architecture diagram assets and their Vento maintenance manifest.
@@ -26,19 +26,30 @@ Vento separates AI-facing current facts from human-facing construction docs:
 
 For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
 
-## Cross-Agent Bridge
+## Native-First Cross-Agent Support
 
-`AGENTS.md` and `.agents/skills/` are the source of truth. Codex loads them natively; Claude Code loads `CLAUDE.md` and `.claude/skills/` instead, so Vento bootstrap proposes two pointer-only bridge files:
+Vento initializes only the active host's native project assets:
 
-- `CLAUDE.md` containing a single `@AGENTS.md` import line.
-- `.claude/skills` as a relative symlink to `.agents/skills`.
+- Codex-first project: `AGENTS.md` and `.agents/skills`.
+- Claude Code-first project: `CLAUDE.md` and `.claude/skills`.
 
-No content is duplicated; both agents read the same assets. `vento validate` reports missing bridge files as warnings.
+It does not create `AGENTS.md` during a Claude-only bootstrap, and it does not
+create `CLAUDE.md` during a Codex-only bootstrap. When the second host is later
+added, Vento preserves the first host as authoritative and creates pointers rather
+than duplicate rule/skill copies:
+
+- Codex first: `CLAUDE.md` imports `@AGENTS.md`, and `.claude/skills` may link to
+  `../.agents/skills`.
+- Claude Code first: a pointer-only `AGENTS.md` tells Codex to read `CLAUDE.md`,
+  and `.agents/skills` may link to `../.claude/skills`.
+
+If both sides already contain independent content, Vento reports a split-brain
+conflict and waits for an explicit authority/merge decision. `vento validate`
+accepts native-only projects and validates bridges only when both hosts are present.
 
 Claude Code loads the installed plugin's `skills/` directory as namespaced skills
 such as `/vento:vento`. A plugin-root `CLAUDE.md` is not used as project context;
-for target projects, the supported bridge remains a project-root `CLAUDE.md` with
-`@AGENTS.md` plus a `.claude/skills` symlink to `.agents/skills`.
+the target project's own `CLAUDE.md` remains the Claude-native guidance entrypoint.
 
 ## Install In Codex
 
@@ -141,7 +152,8 @@ claude plugin enable vento@vento --scope user
 
 Start a new Claude Code session after install or update. The plugin skill is
 invoked with the namespace `/vento:vento`; project-specific rules continue to be
-loaded from `CLAUDE.md`/`AGENTS.md`, not copied into the plugin.
+loaded from the target project's native `CLAUDE.md` or `AGENTS.md`, not copied
+into the plugin.
 
 Validate the Claude package from the Vento source tree:
 
@@ -171,7 +183,7 @@ explicit initialization request. Once a project has a manifest at
 `vento refresh` checks architecture-impacting changes and proposes an incremental
 drawio-skill sync. It does not create a diagram for projects that have not opted in.
 The manifest also records its links into the current-state document, construct index,
-and `AGENTS.md` when those assets exist; an unlinked diagram is reported as
+and the authoritative `AGENTS.md` or `CLAUDE.md` when guidance exists; an unlinked diagram is reported as
 documentation drift rather than being treated as a complete project map.
 
 Prefer a small set of purpose-specific views over one source dump. A context view

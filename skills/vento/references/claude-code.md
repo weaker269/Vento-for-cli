@@ -9,9 +9,14 @@ Vento plugin package
 ├── .claude-plugin/marketplace.json
 └── skills/vento/SKILL.md          -> /vento:vento
 
-Target project
-├── AGENTS.md                      -> shared source of truth
+Claude Code-first target
+├── CLAUDE.md                      -> authoritative guidance
+└── .claude/skills                 -> authoritative project skills
+
+Codex-first target after Claude is added
+├── AGENTS.md                      -> authoritative guidance
 ├── CLAUDE.md                      -> @AGENTS.md pointer
+├── .agents/skills                 -> authoritative project skills
 └── .claude/skills                 -> ../.agents/skills symlink
 ```
 
@@ -54,15 +59,20 @@ The plugin is active in a new Claude Code session after installation or update.
 
 ## Project bridge contract
 
-Vento bootstrap may create or propose:
+Vento uses native-first initialization:
 
-- `CLAUDE.md` containing exactly `@AGENTS.md` when no existing content would be
-  overwritten;
-- `.claude/skills` as a relative symlink to `../.agents/skills`.
+- In a new Claude Code project, create `CLAUDE.md` directly from the Claude-native
+  template. Do not create `AGENTS.md` merely for portability.
+- Keep new Claude-first project skills in `.claude/skills`.
+- If Codex is later added, keep Claude's files authoritative. Create a pointer-only
+  `AGENTS.md` that instructs Codex to read `CLAUDE.md`, and link
+  `.agents/skills -> ../.claude/skills` when project skills exist.
+- If Codex was initialized first, create `CLAUDE.md` containing `@AGENTS.md` and
+  link `.claude/skills -> ../.agents/skills` when Claude Code is added.
 
-If either bridge already exists with conflicting content, report the conflict and
-do not replace it silently. `AGENTS.md` and `.agents/skills` remain the single
-source of truth for both Codex and Claude Code.
+If either side already exists with independent content, report a split-brain
+conflict and do not replace it silently. Never create circular imports or two skill
+symlinks that point at each other.
 
 ## Validation boundaries
 

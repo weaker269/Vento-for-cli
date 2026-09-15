@@ -56,10 +56,13 @@ promote every imported code dependency into the curated model.
 
 The manifest must also describe how the architecture asset is connected to the
 project map. Use `integration.current_state`, `integration.construct_index`, and
-`integration.agents` when those files exist. Each referenced document must contain
-an explicit link or pointer to the architecture manifest or its main diagram.
+`integration.guidance` when those files exist. Set `guidance` to the authoritative
+`AGENTS.md` or `CLAUDE.md`. Each referenced document must contain an explicit link
+or pointer to the architecture manifest or its main diagram.
 
-The manifest schema is `vento/architecture/v1`:
+The manifest schema is `vento/architecture/v1`. The example below assumes a
+Codex-first project; use `"guidance": "CLAUDE.md"` in a Claude Code-first
+project, including after its pointer-only Codex bridge is added:
 
 ```json
 {
@@ -83,7 +86,7 @@ The manifest schema is `vento/architecture/v1`:
   "integration": {
     "current_state": "docs/productization/codebase-current-state.md",
     "construct_index": "docs/construct/README.md",
-    "agents": "AGENTS.md"
+    "guidance": "AGENTS.md"
   }
 }
 ```
@@ -107,10 +110,10 @@ the asset discoverable only by directory search:
 
 - add a short Architecture Map pointer to the current-state entrypoint;
 - add the architecture topic to `docs/construct/README.md` when that index exists;
-- add the architecture directory to `AGENTS.md` Context Entry Points when `AGENTS.md`
-  exists;
+- add the architecture directory to the authoritative `AGENTS.md` or `CLAUDE.md`
+  Context Entry Points when guidance exists;
 - keep the detailed node/edge inventory in the architecture assets, not in
-  `AGENTS.md` or the current-state entrypoint.
+  the authoritative guidance or current-state entrypoint.
 
 Use the external skill's unified CLI when available. Build the overview from the
 curated IR after the view contract is agreed:

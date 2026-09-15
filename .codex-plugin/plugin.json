@@ -1,7 +1,7 @@
 {
   "name": "vento",
-  "version": "0.2.0+codex.20260915081118",
-  "description": "Portable AI project collaboration framework for Codex.",
+  "version": "0.2.0+codex.20260915095543",
+  "description": "Portable AI project collaboration framework for Codex and Claude Code.",
   "author": {
     "name": "wenct"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Vento",
     "shortDescription": "Maintain AI-ready project knowledge.",
-    "longDescription": "Vento helps Codex bootstrap and maintain portable project collaboration assets: AGENTS.md, project skills, current-state docs, architecture maps, roadmap lifecycle rules, validation checks, and refresh workflows.",
+    "longDescription": "Vento helps Codex and Claude Code bootstrap and maintain native-first project collaboration assets: authoritative guidance, project skills, current-state docs, architecture maps, roadmap lifecycle rules, validation checks, and refresh workflows.",
     "developerName": "wenct",
     "category": "Productivity",
     "capabilities": [

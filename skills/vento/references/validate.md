@@ -9,7 +9,7 @@ Validate may inspect:
 - `AGENTS.md`
 - `CLAUDE.md` and `.claude/skills` cross-agent bridge files
 - the Vento `.claude-plugin` manifest, marketplace entry, and Claude Code skill package
-- `.agents/skills/*/SKILL.md`
+- `.agents/skills/*/SKILL.md` or `.claude/skills/*/SKILL.md`
 - opt-in architecture manifests and their repository-relative diagram/IR artifacts
 - current-state docs
 - construct docs
@@ -22,15 +22,16 @@ Validate may inspect:
 - unclear project skill triggers
 - referenced paths that do not exist
 - commands mentioned in Vento docs but absent from project config
-- `AGENTS.md` that reads like current-state: full module maps, route inventories, docs inventories, detailed command matrices, or business data definitions
+- authoritative `AGENTS.md` or `CLAUDE.md` that reads like current-state: full module maps, route inventories, docs inventories, detailed command matrices, or business data definitions
 - placeholder text left in generated files
 - current-state docs containing future plans
 - roadmap content treated as current code fact
 - active roadmap over 2000 lines
 - deprecated roadmap referenced as the active source
 - obvious facts copied from a different project
-- `AGENTS.md` present but `CLAUDE.md` missing or lacking the `@AGENTS.md` import (Claude Code will not auto-load project rules)
-- `.agents/skills` present but the `.claude/skills` bridge symlink missing (Claude Code will not discover project skills)
-- `.claude/skills` existing as a real directory that may diverge from `.agents/skills`
+- a native-only Codex or Claude Code project incorrectly reported as missing a bridge
+- `CLAUDE.md` importing a missing `AGENTS.md`, or a Claude-authoritative `AGENTS.md` bridge pointing to a missing `CLAUDE.md`
+- circular guidance bridges or independent `AGENTS.md`/`CLAUDE.md` files that create split-brain
+- broken, circular, or independent `.agents/skills` and `.claude/skills` trees after both hosts are enabled
 
 Do not modify files in validate mode unless the user explicitly changes the request.

@@ -56,6 +56,7 @@ VIEW_LIMITS = {
     "dataflow": (14, 24),
     "security": (14, 24),
 }
+CLAUDE_AUTHORITY_MARKER = "vento-bridge: authoritative=CLAUDE.md"
 
 
 def repo_path(root: Path, value: str) -> Path:
@@ -63,6 +64,37 @@ def repo_path(root: Path, value: str) -> Path:
     if path.is_absolute() or ".." in path.parts:
         raise ValueError(f"path must be repository-relative: {value}")
     return root / path
+
+
+def discover_authoritative_guidance(root: Path) -> tuple[str | None, str | None]:
+    agents_md = root / "AGENTS.md"
+    claude_md = root / "CLAUDE.md"
+    agents_exists = agents_md.exists()
+    claude_exists = claude_md.exists()
+    agents_text = agents_md.read_text(encoding="utf-8", errors="replace") if agents_exists else ""
+    claude_text = claude_md.read_text(encoding="utf-8", errors="replace") if claude_exists else ""
+    agents_to_claude = CLAUDE_AUTHORITY_MARKER in agents_text
+    claude_to_agents = "@AGENTS.md" in claude_text
+
+    if claude_to_agents and not agents_exists:
+        return None, "CLAUDE.md imports missing AGENTS.md"
+    if agents_to_claude and not claude_exists:
+        return None, "AGENTS.md points to missing CLAUDE.md"
+
+    if agents_exists and not claude_exists:
+        return "AGENTS.md", None
+    if claude_exists and not agents_exists:
+        return "CLAUDE.md", None
+    if not agents_exists and not claude_exists:
+        return None, None
+
+    if agents_to_claude and claude_to_agents:
+        return None, "AGENTS.md and CLAUDE.md form a circular authority bridge"
+    if agents_to_claude:
+        return "CLAUDE.md", None
+    if claude_to_agents:
+        return "AGENTS.md", None
+    return None, "AGENTS.md and CLAUDE.md contain independent guidance; resolve authority or pass --guidance"
 
 
 def find_manifest(root: Path) -> tuple[Path | None, dict | None, list[str]]:
@@ -284,6 +316,7 @@ def drawio_skill_locations(root: Path) -> list[str]:
     paths = (
         Path(configured) / "scripts/diagramctl.py" if configured else None,
         root / ".agents/skills/drawio-skill/scripts/diagramctl.py",
+        root / ".claude/skills/drawio-skill/scripts/diagramctl.py",
         environment / ".codex/skills/drawio-skill/scripts/diagramctl.py",
         environment / ".claude/skills/drawio-skill/scripts/diagramctl.py",
     )
@@ -306,7 +339,7 @@ def documentation_integration(root: Path, manifest_path: Path, data: dict) -> di
     targets: dict[str, str] = {}
     missing: list[str] = []
     unlinked: list[str] = []
-    for key in ("current_state", "construct_index", "agents"):
+    for key in ("current_state", "construct_index", "guidance", "agents"):
         value = integration.get(key)
         if not isinstance(value, str):
             continue
@@ -501,10 +534,17 @@ def init_manifest(root: Path, args: argparse.Namespace) -> int:
     integration = {}
     discovered_state = next((path for path in CURRENT_STATE_CANDIDATES if (root / path).exists()), None)
     discovered_index = Path("docs/construct/README.md") if (root / "docs/construct/README.md").exists() else None
+    requested_guidance = args.guidance or args.agents
+    discovered_guidance = None
+    if not requested_guidance:
+        discovered_guidance, guidance_error = discover_authoritative_guidance(root)
+        if guidance_error:
+            print(f"Cannot initialize architecture integration: {guidance_error}", file=sys.stderr)
+            return 2
     for key, value in (
         ("current_state", args.current_state or (str(discovered_state) if discovered_state else None)),
         ("construct_index", args.construct_index or (str(discovered_index) if discovered_index else None)),
-        ("agents", args.agents or ("AGENTS.md" if (root / "AGENTS.md").exists() else None)),
+        ("guidance", requested_guidance or discovered_guidance),
     ):
         if value:
             integration[key] = value
@@ -530,7 +570,8 @@ def main() -> int:
     parser.add_argument("--base-ref", help="compare committed changes from BASE_REF...HEAD")
     parser.add_argument("--current-state")
     parser.add_argument("--construct-index")
-    parser.add_argument("--agents")
+    parser.add_argument("--guidance", help="authoritative AGENTS.md or CLAUDE.md path")
+    parser.add_argument("--agents", help="legacy alias for --guidance")
     args = parser.parse_args()
     root = Path(args.root).resolve()
     if args.command == "status":

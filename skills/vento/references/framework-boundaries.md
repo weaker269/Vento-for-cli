@@ -6,8 +6,8 @@ Use these boundaries when creating or reviewing Vento project assets.
 
 Prefer this layout unless the target project already has a clear, compatible convention:
 
-- `AGENTS.md`
-- `.agents/skills/<skill-name>/SKILL.md`
+- native authoritative guidance: `AGENTS.md` (Codex-first) or `CLAUDE.md` (Claude Code-first)
+- native authoritative skills: `.agents/skills/<skill-name>/SKILL.md` or `.claude/skills/<skill-name>/SKILL.md`
 - `docs/productization/codebase-current-state.md`
 - `docs/construct/<topic>.md`
 - `docs/productization/active-roadmap.md`
@@ -16,11 +16,14 @@ For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-
 
 Do not put the codebase current-state entrypoint in `docs/construct/`. The current-state document and construct docs both describe current code facts, but they serve different readers and should remain separate.
 
-## AGENTS.md
+## Authoritative Guidance
 
 Use for hard rules, authorization boundaries, current-fact entry points, high-risk architecture guardrails, core commands, and completion gates.
 
-AGENTS.md is policy-first, not inventory-first. It should tell an agent how to work safely in the project and where to read current facts.
+The first host's native `AGENTS.md` or `CLAUDE.md` is policy-first, not
+inventory-first. It should tell an agent how to work safely in the project and
+where to read current facts. Add the opposite host through a pointer-only bridge;
+do not create two independently maintained policy files.
 
 Keep only pointer-level facts:
 
@@ -32,11 +35,16 @@ Keep only pointer-level facts:
 - project-wide architecture guardrails
 - Vento maintenance gate
 
-Do not use AGENTS.md as a complete architecture manual, module map, route inventory, docs index, or task-specific test matrix.
+Do not use the authoritative guidance file as a complete architecture manual,
+module map, route inventory, docs index, or task-specific test matrix.
 
-## .agents/skills
+## Project Skills
 
 Use for task-specific AI guidance. A project skill should answer what to read, what to reuse, what not to break, and how to validate a scenario.
+
+Use `.agents/skills` for Codex-first projects and `.claude/skills` for Claude
+Code-first projects. When the second host is added, symlink its native discovery
+path to the first host's authoritative skill directory.
 
 Do not create project skills for generic advice.
 
@@ -44,7 +52,9 @@ Do not create project skills for generic advice.
 
 Use for concise current code facts: what the project is, where truth lives, technical stack, module map, key paths, commands, and which historical paths are obsolete.
 
-The current-state doc is the AI/agent entrypoint after `AGENTS.md`. It should be a concise map that points agents to source truth, project skills, construct docs, and validation commands.
+The current-state doc is the AI/agent entrypoint after the authoritative guidance
+file. It should be a concise map that points agents to source truth, project
+skills, construct docs, and validation commands.
 
 Do not include future plans or unimplemented roadmap items.
 

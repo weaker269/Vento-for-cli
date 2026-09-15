@@ -1,7 +1,7 @@
 {
   "name": "vento",
-  "version": "0.2.1",
-  "description": "Portable AI project collaboration framework for Codex and Claude Code, with shared AGENTS.md, project skills, current-state, architecture maps, and roadmap maintenance.",
+  "version": "0.2.3",
+  "description": "Portable AI project collaboration framework for Codex and Claude Code, with native-first guidance, project skills, current-state, architecture maps, and roadmap maintenance.",
   "author": {
     "name": "wenct"
   },

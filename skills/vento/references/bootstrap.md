@@ -6,8 +6,9 @@ Use this mode when a project is first adopting Vento or needs a baseline AI coll
 
 Bootstrap may propose or create:
 
-- `AGENTS.md`
-- cross-agent bridge files (`CLAUDE.md` import stub, `.claude/skills` symlink)
+- the active host's native guidance (`AGENTS.md` for Codex or `CLAUDE.md` for Claude Code)
+- the active host's native project skill directory when Skills mode later needs it
+- cross-agent bridge files only when a second host is explicitly added
 - a concise current-state document
 - optional construct doc skeletons
 - optional roadmap recommendation
@@ -29,37 +30,61 @@ Do not place the codebase current-state entrypoint under `docs/construct/`. Cons
 
 ## Cross-Agent Bridge
 
-Vento assets are agent-neutral, but auto-loading differs by agent: Codex loads `AGENTS.md` and `.agents/skills` natively; Claude Code loads `CLAUDE.md` and `.claude/skills` instead. Bridge with pointers, never with copies:
+Vento assets are agent-neutral, but loading is host-specific. Codex natively reads
+`AGENTS.md` and `.agents/skills`; Claude Code natively reads `CLAUDE.md` and
+`.claude/skills`. Use native-first initialization:
 
-- If `CLAUDE.md` is missing, create it with a single line: `@AGENTS.md`.
-- If `CLAUDE.md` exists without that import, propose appending an `@AGENTS.md` line. Never overwrite existing `CLAUDE.md` content.
-- If `.agents/skills` exists and `.claude/skills` is missing, create a relative symlink: `mkdir -p .claude && ln -s ../.agents/skills .claude/skills`.
-- If `.claude/skills` already exists as a real directory, do not replace it. Report the conflict and let the user decide.
-- Keep `AGENTS.md` and `.agents/skills` as the single source of truth. Do not write agent-specific rule copies.
-- Missing bridge files are warnings, not errors. Projects that only use one agent may skip them.
+- If neither host has guidance, initialize only the active host's native files.
+- A first-time Claude Code bootstrap creates `CLAUDE.md`; it does not create
+  `AGENTS.md` or force `@AGENTS.md`.
+- A first-time Codex bootstrap creates `AGENTS.md`; it does not create `CLAUDE.md`.
+- A project using only one host does not need bridge files and must not receive
+  missing-bridge warnings.
+
+When the second host is explicitly added, preserve whichever host was initialized
+first as the authoritative source:
+
+- **Codex first**: create `CLAUDE.md` with `@AGENTS.md`; if project skills exist,
+  create `.claude/skills -> ../.agents/skills`.
+- **Claude Code first**: create a pointer-only `AGENTS.md` that instructs Codex to
+  read and follow `CLAUDE.md`; if project skills exist, create
+  `.agents/skills -> ../.claude/skills`.
+- Codex has no portable, documented `@CLAUDE.md` import equivalent. Do not present
+  the pointer-only `AGENTS.md` as a native import; it is an explicit read-first
+  instruction.
+- If both guidance files or both skill directories already contain independent
+  content, report a split-brain conflict. Do not replace, merge, or choose an
+  authority without user approval.
+- Never create circular bridges or two symlinks that point at each other.
+
+Use `assets/CLAUDE.template.md` for Claude-native initialization,
+`assets/CLAUDE.agents-bridge.template.md` for Codex-first bridging, and
+`assets/AGENTS.claude-bridge.template.md` for Claude-first bridging.
 
 ## Workflow
 
 1. Read existing guidance first: `AGENTS.md`, README, docs, package/build/test config, CI config, main entry files, schema or route files if present.
 2. Build a short project inventory with real paths and commands.
-3. Sort findings by destination before writing:
-   - policy, authorization, context pointers, architecture guardrails, and completion gates -> `AGENTS.md`
+3. Determine the host state: uninitialized, Codex-native, Claude-native,
+   Codex-authoritative portable, Claude-authoritative portable, or split-brain.
+4. Sort findings by destination before writing:
+   - policy, authorization, context pointers, architecture guardrails, and completion gates -> the active authoritative guidance file
    - project inventory, module map, technical stack, detailed commands, and current implementation facts -> current-state docs
    - task-specific workflows, reuse points, and validation matrices -> project skills
    - future demand and priority -> roadmap
-4. Identify stable boundaries, high-risk areas, core commands, reusable entry points, and missing facts.
-5. Propose the Vento asset plan before writing, including any missing cross-agent bridge files.
-6. After explicit write approval, create or update only the agreed baseline files.
-7. Report what was created, what was skipped, and what facts remain unconfirmed.
+5. Identify stable boundaries, high-risk areas, core commands, reusable entry points, and missing facts.
+6. Propose the Vento asset plan before writing. Propose bridges only when adding a second host.
+7. After explicit write approval, create or update only the agreed baseline files.
+8. Report the authoritative host, what was created, what was skipped, and what facts remain unconfirmed.
 
 ## Output Rules
 
-- Treat `AGENTS.md` as policy-first, not inventory-first.
-- Keep `AGENTS.md` executable and concise: behavior rules, confirmation boundaries, current-fact entry points, high-risk architecture guardrails, and Vento maintenance gates.
-- If creating both `AGENTS.md` and current-state docs, write current implementation facts into current-state first and make `AGENTS.md` point to it.
+- Treat the authoritative `AGENTS.md` or `CLAUDE.md` as policy-first, not inventory-first.
+- Keep the authoritative guidance executable and concise: behavior rules, confirmation boundaries, current-fact entry points, high-risk architecture guardrails, and Vento maintenance gates.
+- If creating guidance and current-state docs, write current implementation facts into current-state first and make the authoritative guidance point to it.
 - If creating construct docs, create only topic-specific skeletons that explain implemented flows, state transitions, data locations, or invariants.
-- Do not put full module maps, API route lists, docs inventories, business data definitions, or detailed command matrices in `AGENTS.md`.
-- Do not move detailed subsystem guidance into `AGENTS.md`; use current-state docs or propose project skills instead.
-- Keep `AGENTS.md` commands to core install/build/typecheck/test/start commands plus dangerous-command confirmation rules.
+- Do not put full module maps, API route lists, docs inventories, business data definitions, or detailed command matrices in the authoritative guidance file.
+- Do not move detailed subsystem guidance into the authoritative guidance file; use current-state docs or propose project skills instead.
+- Keep guidance commands to core install/build/typecheck/test/start commands plus dangerous-command confirmation rules.
 - Do not write future roadmap items into current-state docs.
 - Do not copy facts from another repository.

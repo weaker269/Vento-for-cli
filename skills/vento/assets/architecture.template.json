@@ -52,7 +52,6 @@
   },
   "integration": {
     "current_state": "docs/productization/codebase-current-state.md",
-    "construct_index": "docs/construct/README.md",
-    "agents": "AGENTS.md"
+    "construct_index": "docs/construct/README.md"
   }
 }

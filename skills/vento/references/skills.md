@@ -1,6 +1,8 @@
 # Vento Skills
 
-Use this mode for project `.agents/skills` lifecycle work: audit, propose, create, update, refresh, validate, split, merge, or deprecate.
+Use this mode for native project skill lifecycle work: audit, propose, create,
+update, refresh, validate, split, merge, or deprecate. Use `.agents/skills` in a
+Codex-first project and `.claude/skills` in a Claude Code-first project.
 
 ## Actions
 
@@ -23,7 +25,9 @@ Create a project skill only when at least one is true:
 
 Do not create a skill for generic engineering advice.
 
-When creating the first project skill, ensure `.claude/skills` bridges to `.agents/skills` per the Cross-Agent Bridge rules in `bootstrap.md`.
+Create the first project skill in the active authoritative host's native directory.
+Only add the opposite host's symlink when that second host is explicitly added, per
+the native-first bridge rules in `bootstrap.md`.
 
 ## Required Project Skill Content
 
@@ -44,4 +48,3 @@ Each project skill should include:
 - Prefer current code over old docs.
 - Keep references to real files and commands.
 - Avoid large omnibus skills. Split by task scenario when content grows across unrelated domains.
-

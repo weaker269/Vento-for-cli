@@ -2,7 +2,8 @@
 
 Recommended path: `docs/productization/codebase-current-state.md`
 
-This document is the concise current-fact map for AI agents after `AGENTS.md`. It does not replace source verification.
+This document is the concise current-fact map after the project's authoritative
+`AGENTS.md` or `CLAUDE.md`. It does not replace source verification.
 
 Do not place this entrypoint under `docs/construct/`. Construct docs are topic-based human-facing system construction documents.
 

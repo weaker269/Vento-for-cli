@@ -31,6 +31,12 @@ def main() -> int:
     manifest_path = root / ".claude-plugin" / "plugin.json"
     marketplace_path = root / ".claude-plugin" / "marketplace.json"
     skill_path = root / "skills" / "vento" / "SKILL.md"
+    compatibility_files = (
+        root / "skills" / "vento" / "references" / "claude-code.md",
+        root / "skills" / "vento" / "assets" / "CLAUDE.template.md",
+        root / "skills" / "vento" / "assets" / "CLAUDE.agents-bridge.template.md",
+        root / "skills" / "vento" / "assets" / "AGENTS.claude-bridge.template.md",
+    )
     manifest = read_json(manifest_path, errors) if manifest_path.exists() else None
     marketplace = read_json(marketplace_path, errors) if marketplace_path.exists() else None
 
@@ -40,6 +46,9 @@ def main() -> int:
         errors.append(f"{marketplace_path}: missing Claude marketplace manifest")
     if not skill_path.exists():
         errors.append(f"{skill_path}: missing Vento skill entrypoint")
+    for path in compatibility_files:
+        if not path.exists():
+            errors.append(f"{path}: missing Claude Code compatibility asset")
 
     version = None
     if manifest is not None:
@@ -74,6 +83,8 @@ def main() -> int:
         readme = (root / "README.md").read_text(encoding="utf-8", errors="ignore")
         if "claude plugin marketplace" not in readme or "claude plugin update" not in readme:
             warnings.append(f"{root / 'README.md'}: incomplete Claude Code install/update guidance")
+        if "Native-First Cross-Agent Support" not in readme:
+            warnings.append(f"{root / 'README.md'}: native-first project guidance policy is undocumented")
 
     if errors:
         print("Claude Code plugin validation issues:")

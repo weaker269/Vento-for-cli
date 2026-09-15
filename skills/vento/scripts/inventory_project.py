@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT_MARKERS = [
     "AGENTS.md",
+    "CLAUDE.md",
     "README.md",
     "package.json",
     "pyproject.toml",
@@ -17,7 +18,7 @@ ROOT_MARKERS = [
     "Makefile",
 ]
 
-DOC_DIRS = ["docs", ".agents", ".github", "src", "tests", "test"]
+DOC_DIRS = ["docs", ".agents", ".claude", ".github", "src", "tests", "test"]
 
 
 def existing(paths: list[str], root: Path) -> list[str]:

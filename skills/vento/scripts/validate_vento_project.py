@@ -9,14 +9,20 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from architecture import diagram_metrics, documentation_integration, find_manifest, validate_manifest
+from architecture import (
+    diagram_metrics,
+    discover_authoritative_guidance,
+    documentation_integration,
+    find_manifest,
+    validate_manifest,
+)
 
 
 FRONTMATTER_RE = re.compile(r"^---\n(?P<body>.*?)\n---\n", re.DOTALL)
 CURRENT_STATE_NAME_RE = re.compile(r"(?:^|[-_])(?:codebase-)?current-state(?:[-_]|$)", re.IGNORECASE)
 
 
-def check_agents(path: Path) -> tuple[list[str], list[str]]:
+def check_guidance(path: Path) -> tuple[list[str], list[str]]:
     issues: list[str] = []
     warnings: list[str] = []
     text = path.read_text()
@@ -31,7 +37,7 @@ def check_agents(path: Path) -> tuple[list[str], list[str]]:
     if "## Commands" in text:
         warnings.append(f"{path}: prefer minimal 'Core Commands' over broad command inventories")
     if len(lines) > 180:
-        warnings.append(f"{path}: {len(lines)} lines; AGENTS.md may be carrying current-state detail")
+        warnings.append(f"{path}: {len(lines)} lines; project guidance may be carrying current-state detail")
 
     path_refs = len(re.findall(r"`[^`]*(?:apps/|src/|packages/|docs/)[^`]*`", text))
     docs_refs = text.count("docs/")
@@ -83,34 +89,50 @@ def check_construct_boundaries(root: Path) -> list[str]:
 
 
 def check_cross_agent_bridge(root: Path) -> list[str]:
-    """Warn when Claude Code cannot auto-load AGENTS.md or discover .agents/skills."""
+    """Validate native-only guidance or a one-way bridge to the first host."""
     warnings: list[str] = []
-    claude_md = root / "CLAUDE.md"
+    agents_skills = root / ".agents" / "skills"
     claude_skills = root / ".claude" / "skills"
 
-    if (root / "AGENTS.md").exists():
-        if not claude_md.exists():
-            warnings.append(
-                f"{claude_md}: missing; create an `@AGENTS.md` import stub so Claude Code auto-loads AGENTS.md"
-            )
-        elif "@AGENTS.md" not in claude_md.read_text():
-            warnings.append(
-                f"{claude_md}: lacks the `@AGENTS.md` import; Claude Code will not auto-load AGENTS.md"
-            )
+    _, guidance_error = discover_authoritative_guidance(root)
+    if guidance_error:
+        warnings.append(f"{root}: {guidance_error}")
 
-    if (root / ".agents" / "skills").exists():
-        if claude_skills.is_symlink():
-            pass
-        elif claude_skills.is_dir():
+    agents_present = agents_skills.exists() or agents_skills.is_symlink()
+    claude_present = claude_skills.exists() or claude_skills.is_symlink()
+    if agents_present and claude_present:
+        if agents_skills.is_symlink() and claude_skills.is_symlink():
             warnings.append(
-                f"{claude_skills}: real directory, not a bridge symlink; may diverge from .agents/skills"
+                f"{root}: both project skill directories are symlinks; circular or missing authority is likely"
             )
+        elif agents_skills.is_symlink():
+            if agents_skills.resolve() != claude_skills.resolve():
+                warnings.append(f"{agents_skills}: does not point to Claude Code's authoritative skills")
+        elif claude_skills.is_symlink():
+            if claude_skills.resolve() != agents_skills.resolve():
+                warnings.append(f"{claude_skills}: does not point to Codex's authoritative skills")
         else:
             warnings.append(
-                f"{claude_skills}: missing; symlink to ../.agents/skills so Claude Code discovers project skills"
+                f"{root}: .agents/skills and .claude/skills are independent directories; "
+                "reconcile split-brain explicitly"
             )
+    elif agents_skills.is_symlink() and not agents_skills.exists():
+        warnings.append(f"{agents_skills}: broken skill bridge")
+    elif claude_skills.is_symlink() and not claude_skills.exists():
+        warnings.append(f"{claude_skills}: broken skill bridge")
 
     return warnings
+
+
+def project_skill_files(root: Path) -> list[Path]:
+    """Return unique project skills from either host's authoritative directory."""
+    files: dict[Path, Path] = {}
+    for skills_root in (root / ".agents" / "skills", root / ".claude" / "skills"):
+        if not skills_root.exists():
+            continue
+        for skill_md in sorted(skills_root.glob("*/SKILL.md")):
+            files.setdefault(skill_md.resolve(), skill_md)
+    return list(files.values())
 
 
 def check_architecture(root: Path) -> tuple[list[str], list[str]]:
@@ -152,16 +174,14 @@ def main() -> int:
     issues: list[str] = []
     warnings: list[str] = []
 
-    agents = root / "AGENTS.md"
-    if agents.exists():
-        agent_issues, agent_warnings = check_agents(agents)
-        issues.extend(agent_issues)
-        warnings.extend(agent_warnings)
+    for guidance in (root / "AGENTS.md", root / "CLAUDE.md"):
+        if guidance.exists():
+            guidance_issues, guidance_warnings = check_guidance(guidance)
+            issues.extend(guidance_issues)
+            warnings.extend(guidance_warnings)
 
-    skills_root = root / ".agents" / "skills"
-    if skills_root.exists():
-        for skill_md in sorted(skills_root.glob("*/SKILL.md")):
-            issues.extend(check_skill(skill_md))
+    for skill_md in project_skill_files(root):
+        issues.extend(check_skill(skill_md))
 
     warnings.extend(check_construct_boundaries(root))
     warnings.extend(check_cross_agent_bridge(root))
