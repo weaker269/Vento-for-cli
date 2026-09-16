@@ -10,12 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from architecture import (
-    diagram_metrics,
     discover_authoritative_guidance,
     documentation_integration,
     find_manifest,
     validate_manifest,
+    verification_status,
+    view_budget,
 )
+import flows
 
 
 FRONTMATTER_RE = re.compile(r"^---\n(?P<body>.*?)\n---\n", re.DOTALL)
@@ -157,11 +159,45 @@ def check_architecture(root: Path) -> tuple[list[str], list[str]]:
         warnings.append(f"{manifest}: missing integration target {value}")
     for value in integration["unlinked"]:
         warnings.append(f"{manifest}: integration target does not link architecture assets: {value}")
-    metrics = diagram_metrics(root, data)
-    if isinstance(metrics, dict) and "error" not in metrics:
-        for view, result in metrics.items():
-            for finding in result["readability_issues"]:
-                warnings.append(f"{manifest}: view {view} exceeds readability contract ({finding})")
+    budget = view_budget(root, data)
+    if isinstance(budget, dict) and "error" not in budget:
+        for view, result in budget.items():
+            for finding in result["budget_issues"]:
+                warnings.append(f"{manifest}: view {view} exceeds density budget ({finding})")
+    if data.get("status") == "active":
+        verification = verification_status(issues, budget, data)
+        for key in ("semantic_status", "render_status", "visual_status"):
+            if verification[key] == "failed":
+                issues.append(f"{manifest}: {key} is failed")
+            elif verification[key] == "unverified":
+                warnings.append(f"{manifest}: {key} is unverified")
+    return issues, warnings
+
+
+def check_flows(root: Path) -> tuple[list[str], list[str]]:
+    issues: list[str] = []
+    warnings: list[str] = []
+    manifest, data, parse_errors = flows.find_manifest(root)
+    issues.extend(parse_errors)
+    if manifest is None or data is None:
+        return issues, warnings
+    issues.extend(flows.validate_manifest(root, manifest, data))
+    if not (manifest.parent / "README.md").exists():
+        warnings.append(f"{manifest}: flow README.md is missing; add scope, scenarios, and provenance")
+    integration = flows.documentation_integration(root, manifest, data)
+    if not integration["configured"]:
+        warnings.append(f"{manifest}: flows are not linked from a current-state/map document")
+    for value in integration["missing"]:
+        warnings.append(f"{manifest}: missing integration target {value}")
+    for value in integration["unlinked"]:
+        warnings.append(f"{manifest}: integration target does not link flow assets: {value}")
+    if data.get("status") == "active":
+        for asset_id, verification in flows.asset_verification(data).items():
+            for key in ("render_status", "visual_status"):
+                if verification[key] == "failed":
+                    issues.append(f"{manifest}: flow asset {asset_id} {key} is failed")
+                elif verification[key] == "unverified":
+                    warnings.append(f"{manifest}: flow asset {asset_id} {key} is unverified")
     return issues, warnings
 
 
@@ -188,6 +224,9 @@ def main() -> int:
     architecture_issues, architecture_warnings = check_architecture(root)
     issues.extend(architecture_issues)
     warnings.extend(architecture_warnings)
+    flow_issues, flow_warnings = check_flows(root)
+    issues.extend(flow_issues)
+    warnings.extend(flow_warnings)
 
     roadmap = root / "docs" / "roadmap" / "active-roadmap.md"
     productization_roadmap = root / "docs" / "productization" / "active-roadmap.md"

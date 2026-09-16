@@ -76,13 +76,18 @@ project, including after its pointer-only Codex bridge is added:
     {"path": "src", "kind": "javascript"},
     {"path": "deploy", "kind": "compose"}
   ],
-  "views": ["context", "container", "dynamic", "deployment"],
+  "views": ["context", "container", "deployment"],
   "view_contracts": [
     {"id": "context", "question": "What is the system boundary?", "audience": "stakeholders", "max_nodes": 8, "max_edges": 12},
     {"id": "container", "question": "What are the major runtime blocks?", "audience": "engineers", "max_nodes": 12, "max_edges": 20}
   ],
   "engine": {"name": "drawio-skill", "version": "3.4.0"},
   "sync": {"preserve_manual_layout": true, "prune": false},
+  "verification": {
+    "semantic": {"status": "unverified"},
+    "render": {"status": "unverified", "artifacts": []},
+    "visual_review": {"status": "unverified", "reviewed_at": null}
+  },
   "integration": {
     "current_state": "docs/productization/codebase-current-state.md",
     "construct_index": "docs/construct/README.md",
@@ -132,8 +137,9 @@ python3 <drawio-skill>/scripts/validate.py \
 
 The exact importer and source kind must come from the current project; do not
 guess them from a historical project. If draw.io or Graphviz is unavailable,
-report the missing dependency and retain the editable source/IR workflow rather
-than silently substituting a flattened image.
+report the missing dependency, retain the editable source/IR workflow, and record
+render and visual review as `unverified` rather than silently substituting a
+flattened image or claiming readability.
 
 Importers may still be used to produce evidence-backed detail graphs. Before
 promoting an imported node or edge into a context/container overview, record its
@@ -150,9 +156,10 @@ the same complete graph with different titles.
 - **Container**: show major independently understandable runtime or data boundaries.
   Merge internal helpers and stores into their owning responsibility. Default
   limit: 12 nodes / 20 edges.
-- **Dynamic**: show one important use case as an ordered flow. Do not mix multiple
-  business scenarios or deployment topology into the same view. Default limit:
-  12 participants / 20 interactions.
+- **Runtime behavior**: use Flow mode and `references/flows.md` for ordered flows,
+  sequence diagrams, and lifecycle states. Existing Dynamic pages may be maintained
+  as legacy assets, but a component relationship projection is not an ordered flow
+  and should not be the default for new projects.
 - **Deployment**: show processes, containers, hosts, networks, and external runtime
   dependencies. Do not repeat every in-process call. Default limit: 14 nodes /
   24 edges.
@@ -161,9 +168,8 @@ the same complete graph with different titles.
   than expanding the overview.
 
 Every view contract must state its `question`, `audience`, `max_nodes`, and
-`max_edges`. If a generated view exceeds its contract, split or re-scope it before
-calling it an overview. A visually valid but over-budget view is a warning in
-`vento validate`.
+`max_edges`. These limits are density budgets, not readability proof. If a generated
+view exceeds its contract, split or re-scope it before calling it an overview.
 
 ## Change and drift workflow
 
@@ -186,11 +192,13 @@ Changes to the diagram, IR, manifest, or architecture README require an
 architecture review but do not automatically mean that `diagramctl sync` should
 run; a human may have intentionally adjusted the visual layout or documentation.
 
-`status` also reports `documentation_integration` and `readability`. A manifest
+`status` also reports `documentation_integration`, `view_budget`, and recorded
+verification states. A manifest
 with missing or unlinked map targets is an integration drift finding even when the
 draw.io XML itself is structurally valid. A view that exceeds its node/edge
 contract should be split or deliberately re-scoped before it is treated as an
-overview.
+overview. A view within its budget remains visually `unverified` until a rendered
+artifact is inspected.
 
 如果只发现了 `.drawio` 文件但没有 manifest，视为“发现未注册的架构图”，不视为
 已初始化维护；应先由用户明确要求注册/初始化，再补齐来源和同步策略。
@@ -214,14 +222,17 @@ When synchronizing an existing diagram:
 - keep removals reviewable by default; use pruning only when explicitly requested;
 - run structural validation and inspect a rendered draft when the renderer is
   available;
+- record semantic, render, and visual review statuses separately; a passed visual
+  review requires the rendered artifact and review date;
 - report source facts, inferred edges, unresolved conflicts, and validation
   results separately.
 
 ## Validation and reporting
 
-`vento validate` checks manifest shape and repository-relative artifact references;
-it does not claim that the target project's runtime or architecture is correct.
-The drawio-skill validator and semantic rules provide the diagram-level checks.
+`vento validate` checks manifest shape, density budgets, recorded verification, and
+repository-relative artifact references; it does not claim that the target project's
+runtime or architecture is correct. Node and edge counts never prove readability.
+The drawio-skill validator and an inspected render provide the diagram-level checks.
 
 Every Architecture or Refresh report should state:
 

@@ -60,9 +60,12 @@ After code changes, check whether the change affects:
 - current-state docs
 - construct docs
 - architecture manifest and `.drawio`/Diagram IR assets
+- flow manifest, semantic model, and Mermaid assets
 - roadmap
 
 Explain what was updated or why no Vento asset update was needed.
 If architecture maintenance is initialized, also verify that the current-state/map
-entry still links the architecture manifest and that affected views remain within
-their readability contracts.
+entry still links the architecture manifest, affected views remain within their
+density budgets, and render/visual status is reported honestly. If flow maintenance
+is initialized, identify the affected scenarios and keep Mermaid render and visual
+review status separate.

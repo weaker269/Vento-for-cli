@@ -11,7 +11,7 @@
   "sources": [
     {"path": "src", "kind": "javascript"}
   ],
-  "views": ["context", "container", "dynamic", "deployment"],
+  "views": ["context", "container", "deployment"],
   "view_contracts": [
     {
       "id": "context",
@@ -23,13 +23,6 @@
     {
       "id": "container",
       "question": "What are the major runtime building blocks?",
-      "audience": "engineers",
-      "max_nodes": 12,
-      "max_edges": 20
-    },
-    {
-      "id": "dynamic",
-      "question": "How does one important use case flow through the system?",
       "audience": "engineers",
       "max_nodes": 12,
       "max_edges": 20
@@ -49,6 +42,11 @@
   "sync": {
     "preserve_manual_layout": true,
     "prune": false
+  },
+  "verification": {
+    "semantic": {"status": "unverified"},
+    "render": {"status": "unverified", "artifacts": []},
+    "visual_review": {"status": "unverified", "reviewed_at": null}
   },
   "integration": {
     "current_state": "docs/productization/codebase-current-state.md",

@@ -1,0 +1,35 @@
+{
+  "schema": "vento/flow-model/v1",
+  "metadata": {
+    "title": "System operating flows",
+    "scope": "Current implemented behavior only",
+    "source_reviewed": [],
+    "last_reviewed": ""
+  },
+  "scenarios": [
+    {
+      "id": "system-overview",
+      "title": "System operating overview",
+      "type": "flowchart",
+      "question": "How does the system fulfill its primary user goal?",
+      "audience": ["new contributors", "maintainers"],
+      "status": "current",
+      "direction": "LR",
+      "evidence": ["path/to/source"],
+      "phases": [
+        {"id": "entry", "label": "Entry"},
+        {"id": "execution", "label": "Execution"},
+        {"id": "result", "label": "Result"}
+      ],
+      "steps": [
+        {"id": "start", "label": "Request received", "kind": "start", "phase": "entry", "component": "component-id", "evidence": ["path/to/source"]},
+        {"id": "execute", "label": "Execute the primary operation", "kind": "process", "phase": "execution", "component": "component-id", "evidence": ["path/to/source"]},
+        {"id": "success", "label": "Result delivered", "kind": "end", "phase": "result", "component": "component-id", "evidence": ["path/to/source"]}
+      ],
+      "transitions": [
+        {"from": "start", "to": "execute"},
+        {"from": "execute", "to": "success"}
+      ]
+    }
+  ]
+}

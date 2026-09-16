@@ -1,0 +1,26 @@
+{
+  "schema": "vento/flows/v1",
+  "status": "active",
+  "model": "docs/construct/flows/flow-model.json",
+  "sources": [
+    {"path": "src", "kind": "javascript"}
+  ],
+  "assets": [
+    {
+      "id": "system-overview",
+      "scenario": "system-overview",
+      "type": "flowchart",
+      "diagram": "docs/construct/flows/system-overview.mmd",
+      "renderer": {"name": "mermaid"},
+      "verification": {
+        "render": {"status": "unverified", "artifact": null},
+        "visual_review": {"status": "unverified", "reviewed_at": null}
+      }
+    }
+  ],
+  "integration": {
+    "current_state": "docs/productization/codebase-current-state.md",
+    "construct_index": "docs/construct/README.md",
+    "guidance": "AGENTS.md"
+  }
+}

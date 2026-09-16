@@ -32,6 +32,17 @@ Architecture is opt-in. Keep this section as a pointer to the registered
 architecture assets; do not copy the complete component or relationship inventory
 into the current-state document.
 
+## Operating Flow Map
+
+- Flow manifest (when initialized):
+- Human-facing flow entrypoint:
+- System operating overview:
+- Registered critical scenarios:
+
+Flow maintenance is independently opt-in. Keep ordered steps, branches, messages,
+and state transitions in the registered flow assets rather than duplicating them in
+this current-state entrypoint.
+
 ## Main Entry Points
 
 - Backend:

@@ -56,6 +56,7 @@ VIEW_LIMITS = {
     "dataflow": (14, 24),
     "security": (14, 24),
 }
+VERIFICATION_STATUSES = {"unverified", "passed", "failed"}
 CLAUDE_AUTHORITY_MARKER = "vento-bridge: authoritative=CLAUDE.md"
 
 
@@ -214,6 +215,40 @@ def validate_manifest(root: Path, path: Path, data: dict) -> list[str]:
                     if field in contract and not isinstance(contract[field], int):
                         issues.append(f"{path}: view_contracts[{index}].{field} must be an integer")
 
+    verification = data.get("verification", {})
+    if not isinstance(verification, dict):
+        issues.append(f"{path}: verification must be an object")
+    else:
+        for key in ("semantic", "render", "visual_review"):
+            item = verification.get(key, {"status": "unverified"})
+            if not isinstance(item, dict) or item.get("status", "unverified") not in VERIFICATION_STATUSES:
+                issues.append(
+                    f"{path}: verification.{key}.status must be unverified, passed, or failed"
+                )
+        render = verification.get("render", {})
+        if isinstance(render, dict) and render.get("status") == "passed":
+            artifacts = render.get("artifacts")
+            if not isinstance(artifacts, list) or not artifacts:
+                issues.append(f"{path}: passed render verification requires artifacts")
+            else:
+                for artifact in artifacts:
+                    if not isinstance(artifact, str):
+                        issues.append(f"{path}: render artifacts must be repository-relative strings")
+                        continue
+                    try:
+                        artifact_path = repo_path(root, artifact)
+                    except ValueError as exc:
+                        issues.append(f"{path}: {exc}")
+                        continue
+                    if not artifact_path.exists():
+                        issues.append(f"{path}: missing rendered artifact {artifact}")
+        visual = verification.get("visual_review", {})
+        if isinstance(visual, dict) and visual.get("status") == "passed":
+            if not isinstance(visual.get("reviewed_at"), str):
+                issues.append(f"{path}: passed visual review requires reviewed_at")
+            if not isinstance(render, dict) or render.get("status") != "passed":
+                issues.append(f"{path}: passed visual review requires passed render verification")
+
     curated_model = data.get("curated_model")
     if isinstance(modeling, dict) and modeling.get("source_of_truth") == "curated" and not curated_model:
         issues.append(f"{path}: curated modeling requires curated_model")
@@ -367,7 +402,7 @@ def documentation_integration(root: Path, manifest_path: Path, data: dict) -> di
     }
 
 
-def diagram_metrics(root: Path, data: dict) -> dict:
+def view_budget(root: Path, data: dict) -> dict:
     diagram = data.get("diagram")
     if not isinstance(diagram, str):
         return {"error": "manifest diagram is not configured"}
@@ -405,9 +440,27 @@ def diagram_metrics(root: Path, data: dict) -> dict:
             "edges": len(edges),
             "max_nodes": max_nodes,
             "max_edges": max_edges,
-            "readability_issues": over,
+            "budget_issues": over,
         }
     return pages
+
+
+def verification_status(manifest_issues: list[str], budget: dict, data: dict) -> dict:
+    verification = data.get("verification", {})
+    if not isinstance(verification, dict):
+        verification = {}
+    structural_status = "failed" if manifest_issues or "error" in budget else "passed"
+
+    def recorded_status(key: str) -> str:
+        item = verification.get(key, {})
+        return item.get("status", "unverified") if isinstance(item, dict) else "failed"
+
+    return {
+        "structural_status": structural_status,
+        "semantic_status": recorded_status("semantic"),
+        "render_status": recorded_status("render"),
+        "visual_status": recorded_status("visual_review"),
+    }
 
 
 def architecture_diagrams(root: Path) -> list[str]:
@@ -442,9 +495,12 @@ def status(root: Path) -> dict:
         "errors": errors,
     }
     if manifest_path and manifest:
-        result["manifest_issues"] = validate_manifest(root, manifest_path, manifest)
+        manifest_issues = validate_manifest(root, manifest_path, manifest)
+        budget = view_budget(root, manifest)
+        result["manifest_issues"] = manifest_issues
         result["documentation_integration"] = documentation_integration(root, manifest_path, manifest)
-        result["readability"] = diagram_metrics(root, manifest)
+        result["view_budget"] = budget
+        result["verification"] = verification_status(manifest_issues, budget, manifest)
         result["diagram"] = manifest.get("diagram")
         result["model"] = manifest.get("model")
         result["curated_model"] = manifest.get("curated_model")
@@ -501,6 +557,7 @@ def init_manifest(root: Path, args: argparse.Namespace) -> int:
     diagram = args.diagram
     sources = [{"path": value, "kind": args.kind} for value in (args.source or ["src"])]
     curated_model = args.curated_model
+    selected_views = args.view or ["context", "container", "deployment"]
     if curated_model is None:
         candidate = "docs/construct/architecture/architecture-model.json"
         if (root / candidate).exists():
@@ -515,7 +572,7 @@ def init_manifest(root: Path, args: argparse.Namespace) -> int:
             "allow_inference": False,
         },
         "sources": sources,
-        "views": args.view or ["system"],
+        "views": selected_views,
         "view_contracts": [
             {
                 "id": view,
@@ -524,10 +581,15 @@ def init_manifest(root: Path, args: argparse.Namespace) -> int:
                 "max_nodes": VIEW_LIMITS.get(view, (None, None))[0],
                 "max_edges": VIEW_LIMITS.get(view, (None, None))[1],
             }
-            for view in (args.view or ["system"])
+            for view in selected_views
         ],
         "engine": {"name": "drawio-skill", "version": args.engine_version},
         "sync": {"preserve_manual_layout": True, "prune": False},
+        "verification": {
+            "semantic": {"status": "unverified"},
+            "render": {"status": "unverified", "artifacts": []},
+            "visual_review": {"status": "unverified", "reviewed_at": None},
+        },
     }
     if curated_model:
         data["curated_model"] = curated_model

@@ -8,6 +8,7 @@ It provides one main skill, `vento`, with these modes:
 - `vento skills`: create, update, audit, validate, or deprecate project skills in the authoritative host's native directory.
 - `vento roadmap`: initialize, update, replace, rotate, or inspect project roadmaps.
 - `vento architecture`: initialize, inspect, review, and maintain project architecture diagrams.
+- `vento flows`: initialize, inspect, render, review, and maintain operating flows, sequence diagrams, and lifecycle state diagrams.
 - `vento validate`: run read-only structural checks for Vento assets.
 - `vento refresh`: audit cross-asset factual drift and plan updates.
 
@@ -22,6 +23,8 @@ Vento separates AI-facing current facts from human-facing construction docs:
 - `docs/construct/architecture/`: optional architecture diagram assets and their Vento maintenance manifest.
   The recommended set is `architecture.json` + `architecture-model.json` + generated
   `system.ir.json`/`system.drawio` views.
+- `docs/construct/flows/`: optional runtime behavior assets. The recommended set is
+  `flows.json` + `flow-model.json` + generated Mermaid flowchart/sequence/state sources.
 - `docs/productization/active-roadmap.md`: active demand and prioritization source.
 
 For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
@@ -188,8 +191,27 @@ documentation drift rather than being treated as a complete project map.
 
 Prefer a small set of purpose-specific views over one source dump. A context view
 should answer the system-boundary question, a container view should answer the
-major-runtime-block question, and dynamic/deployment/data views should be created
-only when they answer a separate question. Use `view_contracts` in the manifest to
-set the intended audience, question, and node/edge limits for each view.
+major-runtime-block question, and deployment/data views should be created only when
+they answer a separate question. Use `view_contracts` in the manifest to set the
+intended audience, question, and node/edge density budgets for each view. Density
+budgets do not prove readability: semantic checks, a real render, and visual review
+are tracked separately, and missing visual evidence remains `unverified`.
+
+Runtime behavior is a separate opt-in lifecycle. Flow mode keeps an evidence-backed
+`flow-model.json` and projects selected scenarios to Mermaid. Use flowcharts for the
+system operating overview and decision-heavy work, sequence diagrams for call order,
+and state diagrams for object lifecycles. Flow assets may reference stable component
+IDs from the architecture model, but structural dependencies and ordered behavior do
+not share one generic edge list.
+
+```bash
+python3 skills/vento/scripts/flows.py status .
+python3 skills/vento/scripts/flows.py check .
+python3 skills/vento/scripts/flows.py render .
+```
+
+Interactive operating maps with search, progressive expansion, detail panels, and
+playback are future derived views of the same flow model. They are not a second
+hand-maintained source of truth.
 
 The root-level `scripts/` entries are compatibility wrappers for the bundled skill scripts.

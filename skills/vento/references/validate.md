@@ -11,6 +11,7 @@ Validate may inspect:
 - the Vento `.claude-plugin` manifest, marketplace entry, and Claude Code skill package
 - `.agents/skills/*/SKILL.md` or `.claude/skills/*/SKILL.md`
 - opt-in architecture manifests and their repository-relative diagram/IR artifacts
+- opt-in flow manifests, semantic models, Mermaid assets, and recorded visual verification
 - current-state docs
 - construct docs
 - active and deprecated roadmaps
@@ -33,5 +34,7 @@ Validate may inspect:
 - `CLAUDE.md` importing a missing `AGENTS.md`, or a Claude-authoritative `AGENTS.md` bridge pointing to a missing `CLAUDE.md`
 - circular guidance bridges or independent `AGENTS.md`/`CLAUDE.md` files that create split-brain
 - broken, circular, or independent `.agents/skills` and `.claude/skills` trees after both hosts are enabled
+- architecture density budgets presented as readability proof, or render/visual status left unverified
+- flow scenarios with unknown steps, participants, states, or mismatched registered asset types
 
 Do not modify files in validate mode unless the user explicitly changes the request.
