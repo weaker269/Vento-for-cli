@@ -23,6 +23,7 @@ Keep this section short. Do not describe subsystem details here.
 - Project skills:
 - Construct docs: `docs/construct/`
 - Architecture assets (when initialized): `docs/construct/architecture/`
+- Flow assets (when initialized): `docs/construct/flows/`
 - Source roots:
 - Tests:
 - Config/schema:

@@ -110,6 +110,21 @@ Before writing anything:
 - check whether `drawio-skill` is available and record its pinned version;
 - decide which sources are authoritative for future sync.
 
+After explicit write approval, the Vento helper can scaffold the manifest. It
+refuses to overwrite an existing manifest, links the current-state, construct
+index, and authoritative guidance files it finds, and records every verification
+state as `unverified`:
+
+```bash
+python3 skills/vento/scripts/architecture.py init . \
+  --source <source-root> --kind <source-kind> \
+  --view context --view container
+```
+
+The scaffolded `view_contracts` carry placeholder questions and a generic
+`project maintainers` audience. Replace them with the agreed question and audience
+for each view before treating the manifest as complete.
+
 After generating the diagram, update the existing project map rather than leaving
 the asset discoverable only by directory search:
 

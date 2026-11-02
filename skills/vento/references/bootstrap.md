@@ -14,7 +14,7 @@ Bootstrap may propose or create:
 - optional roadmap recommendation
 - recommendations for future project skills
 
-Bootstrap must not create full `.agents/skills` or manage roadmap replacement. Use Skills or Roadmap mode for those.
+Bootstrap must not create a full native project skill set (`.agents/skills` or `.claude/skills`) or manage roadmap replacement. Use Skills or Roadmap mode for those.
 
 ## Default Paths
 
@@ -63,7 +63,7 @@ Use `assets/CLAUDE.template.md` for Claude-native initialization,
 
 ## Workflow
 
-1. Read existing guidance first: `AGENTS.md`, README, docs, package/build/test config, CI config, main entry files, schema or route files if present.
+1. Read existing guidance first: `AGENTS.md`, `CLAUDE.md`, `.agents/skills`, `.claude/skills`, README, docs, package/build/test config, CI config, main entry files, schema or route files if present.
 2. Build a short project inventory with real paths and commands.
 3. Determine the host state: uninitialized, Codex-native, Claude-native,
    Codex-authoritative portable, Claude-authoritative portable, or split-brain.
