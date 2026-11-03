@@ -6,7 +6,7 @@ It provides one main skill, `vento`, with these modes:
 
 - `vento bootstrap`: set up baseline project AI guidance.
 - `vento skills`: create, update, audit, validate, or deprecate project skills in the authoritative host's native directory.
-- `vento roadmap`: initialize, update, replace, rotate, or inspect project roadmaps.
+- `vento roadmap`: initialize, update, replace, rotate, or inspect project roadmaps and their linked design specs.
 - `vento architecture`: initialize, inspect, review, and maintain project architecture diagrams.
 - `vento flows`: initialize, inspect, render, review, and maintain operating flows, sequence diagrams, and lifecycle state diagrams.
 - `vento validate`: run read-only structural checks for Vento assets.
@@ -26,8 +26,26 @@ Vento separates AI-facing current facts from human-facing construction docs:
 - `docs/construct/flows/`: optional runtime behavior assets. The recommended set is
   `flows.json` + `flow-model.json` + generated Mermaid flowchart/sequence/state sources.
 - `docs/productization/active-roadmap.md`: active demand and prioritization source.
+- `docs/productization/specs/YYYY-MM-DD-<topic>.md`: optional design decision records linked from roadmap items.
 
-For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
+For lighter projects, `docs/codebase-current-state.md`, `docs/roadmap/active-roadmap.md`, and `docs/roadmap/specs/` are acceptable fallbacks. Do not place the codebase current-state entrypoint under `docs/construct/`.
+
+## Planning Chain
+
+Vento owns its planning workflow and does not depend on external workflow plugins:
+
+```text
+Roadmap -> Spec (optional) -> Implementation -> Roadmap update
+```
+
+Not every request belongs in the roadmap: small, self-contained changes go straight
+to implementation, and the agent judges which work is worth tracking. Write a spec
+only when a roadmap item needs a design decision. Step-by-step
+execution plans stay in the agent's visible task plan by default; persist one under
+`docs/productization/plans/` only when the work spans multiple sessions. Existing
+tool-specific directories such as `docs/superpowers/` are treated as legacy planning
+paths: links stay valid, new specs go to the Vento path, and migration happens only
+after explicit approval.
 
 ## Native-First Cross-Agent Support
 

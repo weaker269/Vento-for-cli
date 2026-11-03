@@ -1,6 +1,6 @@
 {
   "name": "vento",
-  "version": "0.3.0+codex.20260916030045",
+  "version": "0.4.0+codex.20261103065625",
   "description": "Portable AI project collaboration framework for Codex and Claude Code.",
   "author": {
     "name": "wenct"

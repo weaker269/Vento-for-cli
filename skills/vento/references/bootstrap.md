@@ -25,6 +25,7 @@ Prefer these paths unless the target project already has a clear, compatible con
 - construct docs: `docs/construct/<topic>.md`
 - active roadmap: `docs/productization/active-roadmap.md`
 - lightweight fallback active roadmap: `docs/roadmap/active-roadmap.md`
+- optional specs: `docs/productization/specs/YYYY-MM-DD-<topic>.md` (fallback `docs/roadmap/specs/`), created only when a roadmap item needs a design decision
 
 Do not place the codebase current-state entrypoint under `docs/construct/`. Construct docs are topic-based human-facing system construction documents, not the AI/agent current-state entrypoint.
 
@@ -72,6 +73,7 @@ Use `assets/CLAUDE.template.md` for Claude-native initialization,
    - project inventory, module map, technical stack, detailed commands, and current implementation facts -> current-state docs
    - task-specific workflows, reuse points, and validation matrices -> project skills
    - future demand and priority -> roadmap
+   - design decisions for a specific roadmap item -> a spec linked from that item
 5. Identify stable boundaries, high-risk areas, core commands, reusable entry points, and missing facts.
 6. Propose the Vento asset plan before writing. Propose bridges only when adding a second host.
 7. After explicit write approval, create or update only the agreed baseline files.
@@ -80,11 +82,11 @@ Use `assets/CLAUDE.template.md` for Claude-native initialization,
 ## Output Rules
 
 - Treat the authoritative `AGENTS.md` or `CLAUDE.md` as policy-first, not inventory-first.
-- Keep the authoritative guidance executable and concise: behavior rules, confirmation boundaries, current-fact entry points, high-risk architecture guardrails, and Vento maintenance gates.
+- Keep the authoritative guidance executable and concise: behavior rules, current-fact entry points, high-risk architecture guardrails, and Vento maintenance gates.
 - If creating guidance and current-state docs, write current implementation facts into current-state first and make the authoritative guidance point to it.
 - If creating construct docs, create only topic-specific skeletons that explain implemented flows, state transitions, data locations, or invariants.
 - Do not put full module maps, API route lists, docs inventories, business data definitions, or detailed command matrices in the authoritative guidance file.
 - Do not move detailed subsystem guidance into the authoritative guidance file; use current-state docs or propose project skills instead.
-- Keep guidance commands to core install/build/typecheck/test/start commands plus dangerous-command confirmation rules.
+- Keep guidance commands to core install/build/typecheck/test/start commands.
 - Do not write future roadmap items into current-state docs.
 - Do not copy facts from another repository.

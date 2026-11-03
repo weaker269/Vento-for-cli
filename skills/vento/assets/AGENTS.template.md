@@ -13,8 +13,6 @@ Keep this section short. Do not describe subsystem details here.
 ## Working Rules
 
 - Default language:
-- Modification authorization:
-- High-risk operations requiring confirmation:
 - Secrets and environment rules:
 
 ## Context Entry Points
@@ -24,6 +22,7 @@ Keep this section short. Do not describe subsystem details here.
 - Construct docs: `docs/construct/`
 - Architecture assets (when initialized): `docs/construct/architecture/`
 - Flow assets (when initialized): `docs/construct/flows/`
+- Planning (read only for planning or design tasks): `docs/productization/active-roadmap.md` and its linked specs
 - Source roots:
 - Tests:
 - Config/schema:
@@ -62,7 +61,7 @@ After code changes, check whether the change affects:
 - construct docs
 - architecture manifest and `.drawio`/Diagram IR assets
 - flow manifest, semantic model, and Mermaid assets
-- roadmap
+- roadmap item status and linked spec status
 
 Explain what was updated or why no Vento asset update was needed.
 If architecture maintenance is initialized, also verify that the current-state/map

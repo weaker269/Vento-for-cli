@@ -9,7 +9,7 @@
       "name": "vento",
       "source": "./",
       "description": "Portable AI project collaboration framework for Codex and Claude Code: native-first guidance, project skills, current-state, architecture maps, runtime flows, and roadmap lifecycle.",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "category": "productivity",
       "keywords": [
         "agents",

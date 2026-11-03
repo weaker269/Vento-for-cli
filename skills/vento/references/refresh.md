@@ -10,7 +10,9 @@ Refresh is not a replacement for Skills or Roadmap mode. It decides which Vento 
 2. Read existing Vento assets.
 3. If an architecture manifest exists, run the architecture drift check described in `references/architecture.md`.
 4. If a flow manifest exists, run the flow drift check described in `references/flows.md`.
-5. Compare current facts with project guidance.
+5. Compare current facts with project guidance. For roadmap items implemented since
+   the last refresh, check that the item status, linked spec status, and
+   current-state or construct docs were updated.
 6. Report drift by asset, including architecture and flow diagrams when applicable.
 7. Recommend updates and order.
 8. Ask for write approval before changing files.
@@ -25,6 +27,7 @@ Include:
 - drift found
 - architecture density budgets, render/visual status, and project-map registration, when initialized
 - affected flow scenarios, Mermaid render/visual status, and project-map registration, when initialized
+- planning assets: missing spec links, stale spec statuses, and legacy planning paths as migration candidates
 - recommended updates
 - suggested order
 - items needing user approval
@@ -38,3 +41,7 @@ implicitly during refresh.
 
 If no flow manifest exists, report that flow maintenance is not initialized and skip
 flow creation. Do not infer that every project needs flow assets.
+
+If legacy planning paths such as `docs/superpowers/` exist, propose a migration in
+the report and leave the files in place. Migrate only after explicit approval, per
+`references/roadmap.md`.

@@ -1,6 +1,6 @@
 ---
 name: vento
-description: Apply the Vento portable AI project collaboration framework. Use when setting up, auditing, refreshing, validating, or maintaining project-level AGENTS.md or CLAUDE.md, native project skills, current-state docs, construct docs, architecture maps, runtime flow diagrams, roadmap lifecycle, project skill lifecycle, or related AI collaboration rules. Also use when the user asks to initialize, inspect, update, or review architecture or flow assets; create, update, replace, rotate, archive, deprecate, or migrate a project roadmap; create, update, audit, validate, or deprecate project skills; validate framework files; or refresh project knowledge after code changes.
+description: Apply the Vento portable AI project collaboration framework. Use when setting up, auditing, refreshing, validating, or maintaining project-level AGENTS.md or CLAUDE.md, native project skills, current-state docs, construct docs, architecture maps, runtime flow diagrams, roadmap lifecycle and linked design specs, project skill lifecycle, or related AI collaboration rules. Also use when the user asks to initialize, inspect, update, or review architecture or flow assets; create, update, replace, rotate, archive, deprecate, or migrate a project roadmap; create, update, audit, validate, or deprecate project skills; validate framework files; or refresh project knowledge after code changes.
 ---
 
 # Vento
@@ -15,7 +15,7 @@ Choose exactly one primary mode from the user's request:
 
 - **Bootstrap**: first-time setup or baseline project AI guidance. Read `references/bootstrap.md`.
 - **Skills**: create, update, audit, validate, refresh, split, merge, or deprecate native project skills. Read `references/skills.md`.
-- **Roadmap**: initialize, update, replace, rotate, archive, deprecate, inspect, or migrate a project roadmap. Read `references/roadmap.md`.
+- **Roadmap**: initialize, update, replace, rotate, archive, deprecate, inspect, or migrate a project roadmap and its linked design specs. Read `references/roadmap.md`.
 - **Architecture**: initialize, inspect, review, and maintain a project architecture diagram. Read `references/architecture.md`.
 - **Flows**: initialize, inspect, render, review, and maintain operating flows, sequence diagrams, or lifecycle state diagrams. Read `references/flows.md`.
 - **Validate**: read-only structural checks for Vento assets. Read `references/validate.md`.
@@ -36,7 +36,8 @@ Treat these slash-like phrases as aliases, even when no real slash command exist
 - Default to read-only audit. Create or edit files only after explicit user approval.
 - Use current code, config, tests, docs, and user-confirmed facts as evidence. Do not invent project capabilities.
 - Keep current facts separate from future plans.
-- Keep Vento assets scoped: the authoritative native guidance file (`AGENTS.md` for Codex-first or `CLAUDE.md` for Claude-first) for hard rules and entry points, its native project skill directory for task scenarios, current-state docs for concise current facts, construct docs for system flows, and roadmap for future demand.
+- Keep Vento assets scoped: the authoritative native guidance file (`AGENTS.md` for Codex-first or `CLAUDE.md` for Claude-first) for hard rules and entry points, its native project skill directory for task scenarios, current-state docs for concise current facts, construct docs for system flows, roadmap for future demand, and optional specs for design decisions linked from roadmap items.
+- For work worth tracking, use the planning chain `Roadmap -> Spec (optional) -> Implementation -> Roadmap update`. Small requests do not need a roadmap entry; judge from scope and risk. Keep execution plans transient unless work spans sessions. Vento does not depend on external workflow plugins; treat tool-specific planning directories as legacy paths. Follow `references/roadmap.md`.
 - When architecture or flow maintenance is initialized, register its manifest and human-facing entrypoint in the current-state/project map. Report density budgets, rendering, and visual review as separate evidence; do not leave diagrams as isolated files or claim readability from node and edge counts.
 - Initialize guidance in the active host's native files. Only create cross-agent bridges when a second host is added, and keep the first initialized guidance/skills as the authoritative source. Follow `references/bootstrap.md`.
 - Do not create generic project skills. A project skill must encode project-specific files, reuse points, risks, or validation choices.

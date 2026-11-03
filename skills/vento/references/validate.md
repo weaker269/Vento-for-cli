@@ -15,6 +15,7 @@ Validate may inspect:
 - current-state docs
 - construct docs
 - active and deprecated roadmaps
+- specs and persisted plans linked from the active roadmap
 - package/build/test/CI config referenced by docs
 
 ## What To Report
@@ -29,6 +30,9 @@ Validate may inspect:
 - roadmap content treated as current code fact
 - active roadmap over 2000 lines
 - deprecated roadmap referenced as the active source
+- active roadmap `Spec:` or `Plan:` links pointing to missing files
+- specs without a recognized `Status:` (`Draft`, `Accepted`, `Implemented`, `Superseded`)
+- legacy tool-specific planning paths such as `docs/superpowers/`, reported as migration candidates rather than failures
 - obvious facts copied from a different project
 - a native-only Codex or Claude Code project incorrectly reported as missing a bridge
 - `CLAUDE.md` importing a missing `AGENTS.md`, or a Claude-authoritative `AGENTS.md` bridge pointing to a missing `CLAUDE.md`

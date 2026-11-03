@@ -23,6 +23,16 @@ import flows
 FRONTMATTER_RE = re.compile(r"^---\n(?P<body>.*?)\n---\n", re.DOTALL)
 CURRENT_STATE_NAME_RE = re.compile(r"(?:^|[-_])(?:codebase-)?current-state(?:[-_]|$)", re.IGNORECASE)
 
+ACTIVE_ROADMAPS = ("docs/roadmap/active-roadmap.md", "docs/productization/active-roadmap.md")
+SPEC_DIRS = ("docs/productization/specs", "docs/roadmap/specs")
+LEGACY_PLANNING_DIRS = ("docs/superpowers",)
+SPEC_STATUSES = {"Draft", "Accepted", "Implemented", "Superseded"}
+# 匹配 roadmap 中的 `Spec:`、`Spec (optional):`、`Plan:`、`Parent Spec:` 等链接行
+LINKED_PLANNING_RE = re.compile(r"^\s*(?:-\s*)?(?:Parent\s+)?(?:Spec|Plan)\b[^:\n]*:(?P<value>.*)$")
+BACKTICK_MD_RE = re.compile(r"`([^`\s]+\.md)`")
+MARKDOWN_LINK_MD_RE = re.compile(r"\]\(([^)\s#]+\.md)(?:#[^)]*)?\)")
+SPEC_STATUS_RE = re.compile(r"^Status:\s*(?P<status>\S+)", re.MULTILINE)
+
 
 def check_guidance(path: Path) -> tuple[list[str], list[str]]:
     issues: list[str] = []
@@ -88,6 +98,54 @@ def check_construct_boundaries(root: Path) -> list[str]:
             )
 
     return warnings
+
+
+def check_planning_assets(root: Path) -> tuple[list[str], list[str]]:
+    """校验规划资产：roadmap 链接的 spec/plan 必须存在，spec 需有合法状态，旧工具目录只提示迁移。"""
+    issues: list[str] = []
+    warnings: list[str] = []
+
+    for relative in ACTIVE_ROADMAPS:
+        roadmap = root / relative
+        if not roadmap.exists():
+            continue
+        for number, line in enumerate(roadmap.read_text(encoding="utf-8").splitlines(), start=1):
+            match = LINKED_PLANNING_RE.match(line)
+            if not match:
+                continue
+            value = match.group("value")
+            # 反引号路径按仓库根解析，Markdown 链接按 roadmap 所在目录解析
+            refs = [(ref, root / ref) for ref in BACKTICK_MD_RE.findall(value)]
+            refs += [(ref, roadmap.parent / ref) for ref in MARKDOWN_LINK_MD_RE.findall(value)]
+            for ref, target in refs:
+                if "<" in ref or "YYYY" in ref:
+                    continue
+                if not target.exists():
+                    issues.append(f"{roadmap}:{number}: linked planning artifact does not exist: {ref}")
+
+    for relative in SPEC_DIRS:
+        spec_dir = root / relative
+        if not spec_dir.is_dir():
+            continue
+        for spec in sorted(spec_dir.glob("*.md")):
+            if spec.name == "README.md":
+                continue
+            match = SPEC_STATUS_RE.search(spec.read_text(encoding="utf-8"))
+            status = match.group("status").strip("`*") if match else None
+            if status not in SPEC_STATUSES:
+                warnings.append(
+                    f"{spec}: missing or unrecognized Status; use Draft, Accepted, Implemented, or Superseded"
+                )
+
+    for relative in LEGACY_PLANNING_DIRS:
+        legacy = root / relative
+        if legacy.is_dir():
+            warnings.append(
+                f"{legacy}: legacy tool-specific planning path; keep links intact, write new specs "
+                "under docs/productization/specs/, and migrate only with explicit approval"
+            )
+
+    return issues, warnings
 
 
 def check_cross_agent_bridge(root: Path) -> list[str]:
@@ -227,10 +285,11 @@ def main() -> int:
     flow_issues, flow_warnings = check_flows(root)
     issues.extend(flow_issues)
     warnings.extend(flow_warnings)
+    planning_issues, planning_warnings = check_planning_assets(root)
+    issues.extend(planning_issues)
+    warnings.extend(planning_warnings)
 
-    roadmap = root / "docs" / "roadmap" / "active-roadmap.md"
-    productization_roadmap = root / "docs" / "productization" / "active-roadmap.md"
-    for candidate in [roadmap, productization_roadmap]:
+    for candidate in (root / relative for relative in ACTIVE_ROADMAPS):
         if candidate.exists():
             line_count = len(candidate.read_text().splitlines())
             if line_count > 2000:

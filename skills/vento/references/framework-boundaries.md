@@ -11,8 +11,9 @@ Prefer this layout unless the target project already has a clear, compatible con
 - `docs/productization/codebase-current-state.md`
 - `docs/construct/<topic>.md`
 - `docs/productization/active-roadmap.md`
+- optional `docs/productization/specs/YYYY-MM-DD-<topic>.md`, linked from roadmap items
 
-For lighter projects, `docs/codebase-current-state.md` and `docs/roadmap/active-roadmap.md` are acceptable fallbacks.
+For lighter projects, `docs/codebase-current-state.md`, `docs/roadmap/active-roadmap.md`, and `docs/roadmap/specs/` are acceptable fallbacks.
 
 Do not put the codebase current-state entrypoint in `docs/construct/`. The current-state document and construct docs both describe current code facts, but they serve different readers and should remain separate.
 
@@ -31,7 +32,6 @@ Keep only pointer-level facts:
 - current-state doc path
 - top-level source roots or truth-source paths
 - core install/build/typecheck/test/start commands
-- dangerous operations requiring confirmation
 - project-wide architecture guardrails
 - Vento maintenance gate
 
@@ -68,6 +68,18 @@ Do not turn construct docs into task logs, roadmap items, or the codebase curren
 
 ## Roadmap
 
-Use for demand and prioritization: what to do, status, acceptance, and links to specs, plans, commits, or validation evidence.
+Use for demand and prioritization: what to do, status, acceptance, and links to specs, persisted multi-session plans, commits, or validation evidence.
 
-Do not treat deprecated roadmaps as active planning sources.
+Do not treat deprecated roadmaps as active planning sources. Do not require a
+roadmap item for small, self-contained changes; the agent judges which work is
+worth tracking.
+
+## Specs
+
+Use for the design decision behind one roadmap item: problem, chosen design,
+alternatives, affected contracts, and acceptance.
+
+Specs are optional and are decision records, not current code facts. Do not create
+one for every roadmap item, and do not keep step-by-step execution plans in the
+repository by default. Follow `references/roadmap.md` for the planning chain,
+spec status, and legacy planning paths.

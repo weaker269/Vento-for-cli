@@ -24,8 +24,7 @@ Acceptance:
 - 
 
 Linked artifacts:
-- Spec:
-- Plan:
+- Spec (optional):
 - Commits:
 - Validation:
 
